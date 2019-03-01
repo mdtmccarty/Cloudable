@@ -10,13 +10,17 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class MainActivity extends AppCompatActivity {
 
+    boolean isAdmin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        isAdmin = false;
         //this is a comment that I am adding
     }
     public void intentLogin(View view) {
+        isAdmin = true;
         Intent intent = new Intent(this, MainPageActivity.class);
         startActivity(intent);
         System.out.println("creating intent!");
