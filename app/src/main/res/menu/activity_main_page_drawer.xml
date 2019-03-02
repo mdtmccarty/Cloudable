@@ -6,41 +6,34 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_Home"
-            android:icon="@drawable/ic_menu_gallery"
             android:title="Home" />
         <item
             android:id="@+id/nav_l1"
-            android:icon="@drawable/ic_menu_gallery"
             android:title="Level 1 Audio" />
         <item
             android:id="@+id/nav_l2"
-            android:icon="@drawable/ic_menu_gallery"
             android:title="Level 2 Audio" />
         <item
             android:id="@+id/nav_l3"
-            android:icon="@drawable/ic_menu_gallery"
             android:title="Level 3 Audio" />
         <item
             android:id="@+id/nav_l4"
-            android:icon="@drawable/ic_menu_gallery"
             android:title="Level 4 Audio" />
         <item
             android:id="@+id/nav_l5"
-            android:icon="@drawable/ic_menu_gallery"
             android:title="Level 5 Audio" />
         <item
             android:id="@+id/nav_wa"
-            android:icon="@drawable/ic_menu_gallery"
             android:title="Webinar Archive" />
     </group>
 
     <item android:title="Communicate">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
+                android:id="@+id/nav_ac"
+                android:icon="@drawable/ic_menu_manage"
                 android:title="Admin Control" />
         </menu>
     </item>
-
+    //android:icon="@drawable/ic_menu_gallery"
 </menu>
