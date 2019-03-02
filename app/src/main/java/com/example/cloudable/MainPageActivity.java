@@ -23,14 +23,14 @@ public class MainPageActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -67,7 +67,9 @@ public class MainPageActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
+        //TODO Handle Refresh here
         if (id == R.id.action_settings) {
+            System.out.println("Refreshing...");
             return true;
         }
 
@@ -79,21 +81,31 @@ public class MainPageActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_l1) {
-            // Handle the camera action
+        //TODO handle navigation through folders here
+        if (id == R.id.nav_Home) {
+            System.out.println("Going Home!");
+            // go Home
+        } else if (id == R.id.nav_l1) {
+            System.out.println("Going to Level 1!");
+            // go to Level 2
         } else if (id == R.id.nav_l2) {
-
+            System.out.println("Going to Level 2!");
+            // go to Level 2
         } else if (id == R.id.nav_l3) {
-
+            System.out.println("Going to Level 3!");
+            // go to Level 3
         } else if (id == R.id.nav_l4) {
-
+            System.out.println("Going to Level 4!");
+            // go to Level 4
         } else if (id == R.id.nav_l5) {
-
+            System.out.println("Going to Level 5!");
+            // go to Level 5
         } else if (id == R.id.nav_wa) {
-
+            System.out.println("Going to Webinar Archive!");
+            // go to Webinar Archive
         } else if (id == R.id.nav_ac) {
-
+            System.out.println("Going to Admin Control!");
+            // go to Admin Control
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
