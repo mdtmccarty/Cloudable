@@ -12,9 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class MainPageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    ImageButton androidImageButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,13 @@ public class MainPageActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        androidImageButton = (ImageButton) findViewById(R.id.webinarArchive);
+        androidImageButton.setOnClickListener(new View.OnClickListener() {
+           public void onClick(View v){
+               Toast.makeText(MainPageActivity.this, "It works", Toast.LENGTH_LONG).show();
+           }
+        });
     }
 
     @Override
