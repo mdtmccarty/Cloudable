@@ -25,4 +25,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         System.out.println("creating intent!");
     }
+
+    public void intentNewGroup(View view) {
+        Intent intent = new Intent(this, NewGroup.class);
+        startActivity(intent);
+    }
 }
