@@ -10,8 +10,8 @@
     <string name="create_group">Don\'t have a Group? Click Here</string>
     <string name="title_activity_new_group">newGroup</string>
     <string name="new_groupName">New Group Name</string>
-    <string name="new_key">New Key</string>
-    <string name="confirm_new_key">Verify New Key</string>
+    <string name="new_key">New Group Key</string>
+    <string name="confirm_new_key">Verify New Group Key</string>
     <string name="new_admin_key">New Admin Key</string>
     <string name="confirm_new_admin_key">Verify New Admin Key</string>
     <string name="admin_key">Admin Key</string>
