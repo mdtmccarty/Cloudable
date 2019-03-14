@@ -17,6 +17,7 @@
         tools:ignore="MissingConstraints">
 
         <LinearLayout
+            android:id="@+id/mainLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
@@ -50,23 +51,6 @@
                 tools:layout_editor_absoluteY="390dp"
                 tools:srcCompat="@tools:sample/avatars" />
 
-            <ImageButton
-                android:id="@+id/imageButton4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:srcCompat="@tools:sample/avatars" />
-
-            <ImageButton
-                android:id="@+id/imageButton5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:srcCompat="@tools:sample/avatars" />
-
-            <ImageButton
-                android:id="@+id/imageButton6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:srcCompat="@tools:sample/avatars" />
         </LinearLayout>
     </ScrollView>
 

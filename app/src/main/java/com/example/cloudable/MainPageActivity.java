@@ -1,8 +1,10 @@
 package com.example.cloudable;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +16,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class MainPageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -48,10 +53,22 @@ public class MainPageActivity extends AppCompatActivity
         androidImageButton.setOnClickListener(new View.OnClickListener() {
            public void onClick(View v){
                Toast.makeText(MainPageActivity.this, "It works", Toast.LENGTH_LONG).show();
+
+               View parent = findViewById(R.id.mainLayout);
+               createImageButton(parent);
            }
         });
     }
 
+    public void createImageButton(View parent){
+
+        ArrayList<View> child = new ArrayList<View>();
+        Context temp = this;
+        ImageButton test = new ImageButton(this);
+        child.add(test);
+        Log.i("createButton","Attempting to create new button");
+        parent.addChildrenForAccessibility(child);
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
