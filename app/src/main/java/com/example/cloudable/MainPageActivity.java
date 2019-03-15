@@ -64,10 +64,11 @@ public class MainPageActivity extends AppCompatActivity
 
         ArrayList<View> child = new ArrayList<View>();
         Context temp = this;
-        ImageButton test = new ImageButton(this);
+        ImageButton test = new ImageButton(parent.getContext());
         child.add(test);
         Log.i("createButton","Attempting to create new button");
         parent.addChildrenForAccessibility(child);
+        Log.i("createImageButton", String.valueOf(parent.getTouchables().size()));
     }
     @Override
     public void onBackPressed() {
