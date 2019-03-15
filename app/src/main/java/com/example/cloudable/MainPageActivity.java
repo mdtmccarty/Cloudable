@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -54,20 +55,17 @@ public class MainPageActivity extends AppCompatActivity
            public void onClick(View v){
                Toast.makeText(MainPageActivity.this, "It works", Toast.LENGTH_LONG).show();
 
-               View parent = findViewById(R.id.mainLayout);
+               ViewGroup parent = findViewById(R.id.mainLayout);
                createImageButton(parent);
            }
         });
     }
 
-    public void createImageButton(View parent){
+    public void createImageButton(ViewGroup parent){
 
-        ArrayList<View> child = new ArrayList<View>();
-        Context temp = this;
         ImageButton test = new ImageButton(parent.getContext());
-        child.add(test);
         Log.i("createButton","Attempting to create new button");
-        parent.addChildrenForAccessibility(child);
+        parent.addView(test);
         Log.i("createImageButton", String.valueOf(parent.getTouchables().size()));
     }
     @Override
