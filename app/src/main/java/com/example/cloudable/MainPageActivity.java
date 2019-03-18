@@ -2,6 +2,7 @@ package com.example.cloudable;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -128,6 +129,9 @@ public class MainPageActivity extends AppCompatActivity
             // go to Webinar Archive
         } else if (id == R.id.nav_ac) {
             System.out.println("Going to Admin Control!");
+            Log.i("Admin Control", "Going to Admin Control");
+            Intent intent = new Intent(this, AdminControl.class);
+            startActivity(intent);
             // go to Admin Control
         }
 
