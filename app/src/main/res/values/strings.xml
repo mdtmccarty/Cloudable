@@ -16,4 +16,5 @@
     <string name="confirm_new_admin_key">Verify New Admin Key</string>
     <string name="admin_key">Admin Key</string>
     <string name="submit_button">Submit</string>
+    <string name="title_activity_admin_control">AdminControl</string>
 </resources>

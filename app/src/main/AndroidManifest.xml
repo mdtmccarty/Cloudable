@@ -10,6 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".AdminControl"
+            android:label="@string/title_activity_admin_control"
+            android:parentActivityName=".MainPageActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".NewGroup"
             android:label="@string/title_activity_new_group"
             android:parentActivityName=".MainActivity"
