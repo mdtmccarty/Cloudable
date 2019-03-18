@@ -26,6 +26,7 @@ import java.util.ArrayList;
 public class MainPageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     ImageButton androidImageButton;
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +61,6 @@ public class MainPageActivity extends AppCompatActivity
     }
 
     public void createImageButton(ViewGroup parent){
-
         ImageButton test = new ImageButton(parent.getContext());
         Log.i("createButton","Attempting to create new button");
         parent.addView(test);
@@ -93,6 +93,9 @@ public class MainPageActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         //TODO Handle Refresh here
         if (id == R.id.action_settings) {
+            ViewGroup parent = findViewById(R.id.mainLayout);
+            HandleContent folders = new HandleContent();
+            folders.createFolder(parent);
             System.out.println("Refreshing...");
             return true;
         }
