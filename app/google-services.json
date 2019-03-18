@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "667757578621",
+    "firebase_url": "https://ssc-files.firebaseio.com",
+    "project_id": "ssc-files",
+    "storage_bucket": "ssc-files.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:667757578621:android:6a9a4da637c19fa6",
+        "android_client_info": {
+          "package_name": "com.example.cloudable"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "667757578621-1jb4u46pte9jknc61ckqpgf3s9cq2adm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cloudable",
+            "certificate_hash": "bc4b92ce19aaf7285136b469b5cc61b2d04ecdcf"
+          }
+        },
+        {
+          "client_id": "667757578621-2fihhq1ofif3js74cjf80ipv78kh9ash.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA30edMgryT7WDrCHDeNjV1OSH_8bLnKSA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "667757578621-2fihhq1ofif3js74cjf80ipv78kh9ash.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

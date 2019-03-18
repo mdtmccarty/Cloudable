@@ -29,6 +29,7 @@ public class NewGroup extends AppCompatActivity {
     }
 
     public void submitButton(View view){
+
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
