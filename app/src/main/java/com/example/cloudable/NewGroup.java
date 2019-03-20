@@ -8,6 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+/**
+ * Activity for creating a New Group and starting that groups folders and setting up Admin Access.
+ */
 public class NewGroup extends AppCompatActivity {
 
     @Override
@@ -28,8 +31,11 @@ public class NewGroup extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * Takes the information from Activity to check, save, and ultimately go back to the login page.
+     * @param view All Data on Current Activity
+     */
     public void submitButton(View view){
-
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
