@@ -1,11 +1,8 @@
 package com.example.cloudable;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -20,8 +17,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 public class MainPageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -58,6 +53,11 @@ public class MainPageActivity extends AppCompatActivity
     public void intentAdminControl(View v){
         Intent intent = new Intent(this, AdminControl.class);
         startActivity(intent);
+    }
+
+    public void switchViewGroup(){
+        TestViewGroup test = new TestViewGroup();
+        test.switchViewGroup(findViewById(R.id.mainLayout));
     }
 
     public void createImageButton(ViewGroup parent){
@@ -111,9 +111,12 @@ public class MainPageActivity extends AppCompatActivity
         //TODO handle navigation through folders here
         if (id == R.id.nav_Home) {
             System.out.println("Going Home!");
+            switchViewGroup();
             // go Home
         } else if (id == R.id.nav_l1) {
             System.out.println("Going to Level 1!");
+            TestViewGroup test = new TestViewGroup();
+            test.switchViewGroupBack(findViewById(R.id.evilParent),findViewById(R.id.mainLayout));
             // go to Level 2
         } else if (id == R.id.nav_l2) {
             System.out.println("Going to Level 2!");

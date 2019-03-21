@@ -9,6 +9,7 @@
     tools:showIn="@layout/app_bar_main_page">
 
     <ScrollView
+        android:id="@+id/evilParent"
         android:layout_width="395dp"
         android:layout_height="659dp"
         android:layout_marginTop="8dp"

@@ -16,6 +16,12 @@ public class HandleContent {
         StorageReference storageRef = storage.getReference();
         Log.d("Getting storageRef's name: ",storageRef.getName());
     }
+
+    /**
+     * creates an image button within a view group, to mimic the viewgroup's
+     * content and be displayed when the viewgroup is being used.
+     * @param parent The viewgroup that is being edited
+     */
     public void createFolder(ViewGroup parent){
         Refresh(parent);
         ImageButton test = new ImageButton(parent.getContext());
@@ -27,6 +33,13 @@ public class HandleContent {
         StorageReference TF1 = storageRef.child("Test Folder 1");
         Log.d("Testing Folder Name",TF1.getName());
         //System.out.println(storage.toString());
+    }
+
+    /**
+     * Create a new viewgroup, in representation of viewing the contents of an
+     * existing folder on FireBase
+     */
+    public void createViewGroup(){
     }
 
 }
