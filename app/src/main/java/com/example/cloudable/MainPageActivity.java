@@ -2,6 +2,7 @@ package com.example.cloudable;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +23,7 @@ public class MainPageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     ImageButton androidImageButton;
     SharedPreferences sp;
+    MediaPlayer player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,24 @@ public class MainPageActivity extends AppCompatActivity
                 createImageButton(parent);
             }
         });
+
+
+        androidImageButton = findViewById(R.id.imageButton2);
+        androidImageButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view){
+                setContentView(R.layout.activity_audio_player);
+                //Intent intent = new Intent(this, AudioPlayer.class);
+            }
+        });
+    }
+
+    public void play(View view){
+
+        if (player == null){
+            player = MediaPlayer.create(this,R.raw.recording);
+        }
+
+        player.start();
     }
 
     public void intentAdminControl(){
@@ -120,6 +140,8 @@ public class MainPageActivity extends AppCompatActivity
             // go to Level 2
         } else if (id == R.id.nav_l2) {
             System.out.println("Going to Level 2!");
+            ScrollViewChild test = new ScrollViewChild();
+            test.switchScrollView((ViewGroup) findViewById(R.id.).getParent());
             // go to Level 2
         } else if (id == R.id.nav_l3) {
             System.out.println("Going to Level 3!");
