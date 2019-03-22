@@ -1,6 +1,7 @@
 package com.example.cloudable;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,14 +15,12 @@ import android.widget.Toast;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -59,16 +58,34 @@ public class NewGroup extends AppCompatActivity {
 
         JsonReader myJSON = new JsonReader(new FileReader(localFile));
         FileRecord[] data = new Gson().fromJson(String.valueOf(myJSON), FileRecord[].class);
+        List<FileRecord> files = Arrays.asList(data);
 
+        EditText newGroup = findViewById(R.id.groupName);
         EditText newKey = findViewById(R.id.newKey);
+        EditText verifyKey = findViewById(R.id.verifyKey);
+        EditText newAdminKey = findViewById(R.id.adminKey);
+        EditText verifyAdminKey = findViewById(R.id.verifyAdminKey);
 
-        for (FileRecord file: data) {
+        if(!(newKey.getText().toString().equals(verifyKey.getText().toString())) ||
+                !(newAdminKey.getText().toString().equals(verifyAdminKey.getText().toString()))){
+            Toast.makeText(this, "Your Key or Admin Key do not match. Please re-enter"
+            , Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        for (FileRecord file: files) {
             if(newKey.getText().toString().equals(file.fileName)){
-                Toast.makeText(this, "Please make a different Key", Toast.LENGTH_LONG);
+                Toast.makeText(this, "Please make a different Key", Toast.LENGTH_LONG).show();
                 return;
             }
         }
 
+        files.add(new FileRecord(files.size() + 1, newGroup.getText().toString(),
+                "Folder", newGroup.getText().toString(), newKey.getText().toString(),
+                newAdminKey.getText().toString()));
+
+        new Gson().toJson(files, new FileWriter(localFile));
+        cloudable.putFile(Uri.fromFile(localFile));
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
