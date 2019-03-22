@@ -2,6 +2,7 @@ package com.example.cloudable;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +47,15 @@ public class MainPageActivity extends AppCompatActivity
 
                 ViewGroup parent = findViewById(R.id.mainLayout);
                 createImageButton(parent);
+            }
+        });
+
+
+        androidImageButton = findViewById(R.id.imageButton2);
+        androidImageButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view){
+                //setContentView(R.layout.activity_audio_player);
+                Intent intent = new Intent(this, )
             }
         });
     }
