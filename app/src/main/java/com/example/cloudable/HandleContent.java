@@ -2,6 +2,7 @@ package com.example.cloudable;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
@@ -33,6 +34,10 @@ public class HandleContent {
         StorageReference TF1 = storageRef.child("Test Folder 1");
         Log.d("Testing Folder Name",TF1.getName());
         //System.out.println(storage.toString());
+    }
+
+    public void createScrollView(View parent){
+
     }
 
     /**
