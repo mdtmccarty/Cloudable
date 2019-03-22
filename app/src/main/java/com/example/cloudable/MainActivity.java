@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         key.setText(login.getString("key", ""));
         //this is a comment that I am adding
     }
+
     public void intentLogin(View view) {
         isAdmin = true;
         EditText userName = findViewById(R.id.editText);
