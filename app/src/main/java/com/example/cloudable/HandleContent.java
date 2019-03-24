@@ -9,7 +9,31 @@ import android.widget.ImageButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 public class HandleContent {
+
+    List<ImageButton> imageButtons;
+    Integer numContents;
+    String directory;
+    List<HandleContent> handleContents;
+
+    public HandleContent(){
+        imageButtons = new ArrayList<ImageButton>();
+        String directory = null;
+        handleContents = new ArrayList<HandleContent>();
+        numContents = 0;
+    }
+
+    public HandleContent(String name, Integer tempNumContents){
+        imageButtons = new ArrayList<ImageButton>();
+        for (Integer i = 0; i < tempNumContents; i++){
+//            ImageButton imageButton = new ImageButton();
+//            imageButtons.add()
+        }
+    }
 
     @SuppressLint("LongLogTag")
     public void Refresh(ViewGroup parent){
