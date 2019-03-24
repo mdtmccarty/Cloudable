@@ -25,7 +25,7 @@
         <activity
             android:name=".AudioPlayer"
             android:label="@string/audioPlayer"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainPageActivity"></activity>
         <activity
             android:name=".MainPageActivity"
             android:label="@string/title_activity_main_page"

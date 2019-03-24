@@ -55,21 +55,11 @@ public class MainPageActivity extends AppCompatActivity
         androidImageButton = findViewById(R.id.imageButton2);
         androidImageButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view){
-                //setContentView(R.layout.activity_audio_player);
                 Intent intent = new Intent(MainPageActivity.this, AudioPlayer.class);
                 startActivity(intent);
             }
         });
     }
-
-//    public void play(View view){
-//
-//        if (player == null){
-//            player = MediaPlayer.create(this,R.raw.recording);
-//        }
-//
-//        player.start();
-//    }
 
     public void intentAdminControl(){
         Intent intent = new Intent(this, AdminControl.class);

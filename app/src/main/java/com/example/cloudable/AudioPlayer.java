@@ -14,9 +14,6 @@ public class AudioPlayer extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_player);
-
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
     }
 
     public void play(View view){
