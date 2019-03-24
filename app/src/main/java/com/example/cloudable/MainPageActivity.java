@@ -55,20 +55,21 @@ public class MainPageActivity extends AppCompatActivity
         androidImageButton = findViewById(R.id.imageButton2);
         androidImageButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view){
-                setContentView(R.layout.activity_audio_player);
-                //Intent intent = new Intent(this, AudioPlayer.class);
+                //setContentView(R.layout.activity_audio_player);
+                Intent intent = new Intent(MainPageActivity.this, AudioPlayer.class);
+                startActivity(intent);
             }
         });
     }
 
-    public void play(View view){
-
-        if (player == null){
-            player = MediaPlayer.create(this,R.raw.recording);
-        }
-
-        player.start();
-    }
+//    public void play(View view){
+//
+//        if (player == null){
+//            player = MediaPlayer.create(this,R.raw.recording);
+//        }
+//
+//        player.start();
+//    }
 
     public void intentAdminControl(){
         Intent intent = new Intent(this, AdminControl.class);
@@ -141,7 +142,7 @@ public class MainPageActivity extends AppCompatActivity
         } else if (id == R.id.nav_l2) {
             System.out.println("Going to Level 2!");
             ScrollViewChild test = new ScrollViewChild();
-            test.switchScrollView((ViewGroup) findViewById(R.id.).getParent());
+            //test.switchScrollView((ViewGroup) findViewById(R.id.).getParent());
             // go to Level 2
         } else if (id == R.id.nav_l3) {
             System.out.println("Going to Level 3!");
