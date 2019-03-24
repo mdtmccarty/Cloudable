@@ -27,12 +27,8 @@ public class HandleContent {
         numContents = 0;
     }
 
-    public HandleContent(String name, Integer tempNumContents){
+    public HandleContent(ParsedDirectory parsedDirectory){
         imageButtons = new ArrayList<ImageButton>();
-        for (Integer i = 0; i < tempNumContents; i++){
-//            ImageButton imageButton = new ImageButton();
-//            imageButtons.add()
-        }
     }
 
     @SuppressLint("LongLogTag")
