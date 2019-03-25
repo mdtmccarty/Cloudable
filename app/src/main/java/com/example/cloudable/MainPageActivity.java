@@ -140,8 +140,8 @@ public class MainPageActivity extends AppCompatActivity
             // go to Level 2
         } else if (id == R.id.nav_l2) {
             System.out.println("Going to Level 2!");
-            ScrollViewChild test = new ScrollViewChild();
-            test.switchScrollView((ViewGroup) findViewById(R.id.).getParent());
+//            ScrollViewChild test = new ScrollViewChild();
+//            test.switchScrollView((ViewGroup) findViewById(R.id.).getParent());
             // go to Level 2
         } else if (id == R.id.nav_l3) {
             System.out.println("Going to Level 3!");
