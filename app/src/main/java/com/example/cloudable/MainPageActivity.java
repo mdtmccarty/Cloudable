@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.util.List;
+
 
 public class MainPageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -55,6 +57,7 @@ public class MainPageActivity extends AppCompatActivity
         androidImageButton = findViewById(R.id.imageButton2);
         androidImageButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view){
+
                 setContentView(R.layout.activity_audio_player);
                 //Intent intent = new Intent(this, AudioPlayer.class);
             }
@@ -140,11 +143,10 @@ public class MainPageActivity extends AppCompatActivity
             // go to Level 2
         } else if (id == R.id.nav_l2) {
             System.out.println("Going to Level 2!");
-//            ScrollViewChild test = new ScrollViewChild();
-//            test.switchScrollView((ViewGroup) findViewById(R.id.).getParent());
             // go to Level 2
         } else if (id == R.id.nav_l3) {
             System.out.println("Going to Level 3!");
+
             // go to Level 3
         } else if (id == R.id.nav_l4) {
             System.out.println("Going to Level 4!");
