@@ -54,7 +54,7 @@ public class NewGroup extends AppCompatActivity {
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        cloudable = FirebaseStorage.getInstance().getReference("StorageData.json");
+        cloudable = FirebaseStorage.getInstance().getReference().child("StorageData.json");
     }
 
     /**
