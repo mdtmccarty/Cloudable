@@ -1,6 +1,7 @@
 package com.example.cloudable;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -21,14 +22,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,7 +44,6 @@ public class NewGroup extends AppCompatActivity {
         setContentView(R.layout.activity_new_group);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mAuth = FirebaseAuth.getInstance();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -56,7 +54,7 @@ public class NewGroup extends AppCompatActivity {
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //cloudable = FirebaseStorage.getInstance().getReference("StorageData.json");
+        cloudable = FirebaseStorage.getInstance().getReference("StorageData.json");
     }
 
     /**
@@ -64,38 +62,39 @@ public class NewGroup extends AppCompatActivity {
      * @param view All Data on Current Activity
      */
     public void submitButton(View view) throws IOException {
-//        File localFile = File.createTempFile("data","json");
-//        cloudable.getFile(localFile);
-//
-//        JsonReader myJSON = new JsonReader(new FileReader(localFile));
-//        FileRecord[] data = new Gson().fromJson(String.valueOf(myJSON), FileRecord[].class);
-//
-        EditText newKey = findViewById(R.id.newKey);
-//
-//        for (FileRecord file: data) {
-//            if(newKey.getText().toString().equals(file.fileName)){
-//                Toast.makeText(this, "Please make a different Key", Toast.LENGTH_LONG);
-//                return;
-//            }
-//        }
+        File localFile = File.createTempFile("data","json");
+        cloudable.getFile(localFile);
 
-        username = "dylanwaner93@gmail.com";
-        key = newKey.getText().toString().trim();
-        if (key.isEmpty()){
-            newKey.setError("Key is required");
-            newKey.requestFocus();
+        JsonReader myJSON = new JsonReader(new FileReader(localFile));
+        FileRecord[] data = new Gson().fromJson(String.valueOf(myJSON), FileRecord[].class);
+        List<FileRecord> files = Arrays.asList(data);
+
+        EditText newGroup = findViewById(R.id.groupName);
+        EditText newKey = findViewById(R.id.newKey);
+        EditText verifyKey = findViewById(R.id.verifyKey);
+        EditText newAdminKey = findViewById(R.id.adminKey);
+        EditText verifyAdminKey = findViewById(R.id.verifyAdminKey);
+
+        if(!(newKey.getText().toString().equals(verifyKey.getText().toString())) ||
+                !(newAdminKey.getText().toString().equals(verifyAdminKey.getText().toString()))){
+            Toast.makeText(this, "Your Key or Admin Key do not match. Please re-enter"
+            , Toast.LENGTH_LONG).show();
             return;
         }
 
-        mAuth.createUserWithEmailAndPassword(username, key).addOnCompleteListener(this, new OnCompleteListener<AuthResult>(){
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d("NewGroup", "createUserWithEmail:success");
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    //updateUI(user);
-                }}});
+        for (FileRecord file: files) {
+            if(newKey.getText().toString().equals(file.fileName)){
+                Toast.makeText(this, "Please make a different Key", Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+        files.add(new FileRecord(files.size() + 1, newGroup.getText().toString(),
+                "Folder", newGroup.getText().toString(), newKey.getText().toString(),
+                newAdminKey.getText().toString()));
+
+        new Gson().toJson(files, new FileWriter(localFile));
+        cloudable.putFile(Uri.fromFile(localFile));
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
