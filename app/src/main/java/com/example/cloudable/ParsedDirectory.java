@@ -11,17 +11,22 @@ public class ParsedDirectory {
     String dirPath;
     List<String> itemNames;
     Map<String, String> itemPaths;
+    int numSubDir;
 
     public ParsedDirectory(String tempDirName, String tempDirPath) {
         dirName = tempDirName;
         dirPath = tempDirPath;
         itemNames = new ArrayList<>();
         itemPaths = new HashMap<>();
+        numSubDir = 0;
     }
 
-    public void addItem(String itemName, String itemPath) {
+    public void addItem(String itemName, String itemPath, boolean subDir) {
         itemNames.add(itemName);
         itemPaths.put(itemName, itemPath);
+        if (subDir == true){
+            numSubDir += 1;
+        }
     }
 
     public String getDirName() {
@@ -38,5 +43,9 @@ public class ParsedDirectory {
 
     public Map<String, String> getItemPaths() {
         return itemPaths;
+    }
+
+    public int getNumSubDir() {
+        return numSubDir;
     }
 }

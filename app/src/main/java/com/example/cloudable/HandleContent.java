@@ -1,6 +1,7 @@
 package com.example.cloudable;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,12 @@ import java.util.List;
 public class HandleContent {
 
     List<ImageButton> imageButtons;
-    Integer numContents;
+
+    public int getNumSubDir() {
+        return numSubDir;
+    }
+
+    int numSubDir;
     String directory;
     List<HandleContent> handleContents;
 
@@ -24,11 +30,29 @@ public class HandleContent {
         imageButtons = new ArrayList<ImageButton>();
         String directory = null;
         handleContents = new ArrayList<HandleContent>();
-        numContents = 0;
     }
 
-    public HandleContent(ParsedDirectory parsedDirectory){
-        imageButtons = new ArrayList<ImageButton>();
+    public HandleContent(ParsedDirectory parsedDirectory, Context context){
+        directory = parsedDirectory.getDirName();
+        numSubDir = parsedDirectory.getNumSubDir();
+        for (int i = 0; i < parsedDirectory.getItemNames().size(); i++){
+            ImageButton imageButton = new ImageButton(context);
+            imageButton.setTag(parsedDirectory.getItemNames().get(i));
+            imageButtons.add(imageButton);
+        }
+    }
+
+    public void addSubDirectory(HandleContent handleContent){
+        this.handleContents.add(handleContent);
+    }
+
+    public HandleContent recursDirectory(ArrayList<ParsedDirectory> list, Context context){
+        HandleContent handleContent = new HandleContent(list.get(0),context);
+        list.remove(0);
+        for (int i = 0; i < handleContent.getNumSubDir(); i++){
+            handleContent.addSubDirectory(recursDirectory(list,context));
+        }
+        return handleContent;
     }
 
     @SuppressLint("LongLogTag")

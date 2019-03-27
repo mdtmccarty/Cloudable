@@ -23,6 +23,10 @@
                 android:value="com.example.cloudable.MainActivity" />
         </activity>
         <activity
+            android:name=".AudioPlayer"
+            android:label="@string/audioPlayer"
+            android:parentActivityName=".MainPageActivity"></activity>
+        <activity
             android:name=".MainPageActivity"
             android:label="@string/title_activity_main_page"
             android:theme="@style/AppTheme.NoActionBar" />
