@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "667757578621-k5bpb050ojkeb2h6ureb9e5upbpo4rl1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cloudable",
+            "certificate_hash": "b1682c6f4cafe7c3f6eece9461b1a0c80c9f5f16"
+          }
+        },
+        {
           "client_id": "667757578621-2fihhq1ofif3js74cjf80ipv78kh9ash.apps.googleusercontent.com",
           "client_type": 3
         }
