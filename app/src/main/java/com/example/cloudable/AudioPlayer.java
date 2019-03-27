@@ -4,7 +4,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 
 public class AudioPlayer extends AppCompatActivity {
@@ -15,20 +14,13 @@ public class AudioPlayer extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_player);
-
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
     }
 
-    public void play(View view) {
-        Log.d("AudioPlayer", "Button was clicked");
-    }
+    public void play(View view){
+        if (player == null){
+            player = MediaPlayer.create(this,R.raw.recording);
+        }
 
-//    public void play(View view){
-//        if (player == null){
-//            player = MediaPlayer.create(findViewById(R.id.mainParent).getContext(),R.raw.recording);
-//        }
-//
-//        player.start();
-//    }
+        player.start();
+    }
 }
