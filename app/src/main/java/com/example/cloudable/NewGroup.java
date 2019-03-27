@@ -62,11 +62,12 @@ public class NewGroup extends AppCompatActivity {
      * @param view All Data on Current Activity
      */
     public void submitButton(View view) throws IOException {
+        Gson gson = new Gson();
         File localFile = File.createTempFile("data","json");
         cloudable.getFile(localFile);
 
         JsonReader myJSON = new JsonReader(new FileReader(localFile));
-        FileRecord[] data = new Gson().fromJson(String.valueOf(myJSON), FileRecord[].class);
+        FileRecord[] data = gson.fromJson(String.valueOf(myJSON), FileRecord[].class);
         List<FileRecord> files = Arrays.asList(data);
 
         EditText newGroup = findViewById(R.id.groupName);
@@ -83,7 +84,7 @@ public class NewGroup extends AppCompatActivity {
         }
 
         for (FileRecord file: files) {
-            if(newKey.getText().toString().equals(file.fileName)){
+            if(newKey.getText().toString().equals(file.key)){
                 Toast.makeText(this, "Please make a different Key", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -93,7 +94,7 @@ public class NewGroup extends AppCompatActivity {
                 "Folder", newGroup.getText().toString(), newKey.getText().toString(),
                 newAdminKey.getText().toString()));
 
-        new Gson().toJson(files, new FileWriter(localFile));
+        gson.toJson(files, new FileWriter(localFile));
         cloudable.putFile(Uri.fromFile(localFile));
 
         Intent intent = new Intent(this, MainActivity.class);
