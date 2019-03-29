@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,6 +27,8 @@ public class MainPageActivity extends AppCompatActivity
     ImageButton androidImageButton;
     SharedPreferences sp;
     MediaPlayer player;
+    ArrayList<ParsedDirectory> masterList;
+    HandleContent master;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,18 @@ public class MainPageActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //TODO parse each JSON file into ParsedDirectory Objects, create an ArrayList of ParsedDirectory(s)
+        //TODO starting with the Main directory folder, then it's first child, then it's first child's first child,
+        //TODO then if it's first child's first child doesn't have any children, put it's first child's second child and so on
+        //TODO i.e. 1, 1a, 1ai, 1aii, 1aiii, 1b, 1bi, 1bii, 1c, 1d, 1di, 1dii...
+        masterList = new ArrayList<>();
+
+        //First initialization of main screen
+        master = new HandleContent(masterList.get(0),this);
+        //populate all folders.
+        master.recursDirectory(masterList, this);
+
 
         androidImageButton = findViewById(R.id.webinarArchive);
         androidImageButton.setOnClickListener(new View.OnClickListener() {
@@ -116,9 +131,6 @@ public class MainPageActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         //TODO Handle Refresh here
         if (id == R.id.action_settings) {
-            ViewGroup parent = findViewById(R.id.mainLayout);
-            HandleContent folders = new HandleContent();
-            folders.createFolder(parent);
             System.out.println("Refreshing...");
             return true;
         }
