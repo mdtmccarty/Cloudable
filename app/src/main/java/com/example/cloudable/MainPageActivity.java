@@ -116,9 +116,6 @@ public class MainPageActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         //TODO Handle Refresh here
         if (id == R.id.action_settings) {
-            ViewGroup parent = findViewById(R.id.mainLayout);
-            HandleContent folders = new HandleContent();
-            folders.createFolder(parent);
             System.out.println("Refreshing...");
             return true;
         }
