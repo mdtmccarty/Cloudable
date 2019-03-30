@@ -15,15 +15,20 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -62,18 +67,11 @@ public class NewGroup extends AppCompatActivity {
      * @param view All Data on Current Activity
      */
     public void submitButton(View view) throws IOException {
-        Gson gson = new Gson();
-        File localFile = File.createTempFile("data","json");
-        cloudable.getFile(localFile);
 
-        JsonReader myJSON = new JsonReader(new FileReader(localFile));
-        FileRecord[] data = gson.fromJson(String.valueOf(myJSON), FileRecord[].class);
-        List<FileRecord> files = Arrays.asList(data);
-
-        EditText newGroup = findViewById(R.id.groupName);
-        EditText newKey = findViewById(R.id.newKey);
+        final EditText newGroup = findViewById(R.id.groupName);
+        final EditText newKey = findViewById(R.id.newKey);
         EditText verifyKey = findViewById(R.id.verifyKey);
-        EditText newAdminKey = findViewById(R.id.adminKey);
+        final EditText newAdminKey = findViewById(R.id.adminKey);
         EditText verifyAdminKey = findViewById(R.id.verifyAdminKey);
 
         if(!(newKey.getText().toString().equals(verifyKey.getText().toString())) ||
@@ -83,21 +81,71 @@ public class NewGroup extends AppCompatActivity {
             return;
         }
 
-        for (FileRecord file: files) {
-            if(newKey.getText().toString().equals(file.key)){
-                Toast.makeText(this, "Please make a different Key", Toast.LENGTH_LONG).show();
-                return;
-            }
-        }
+        final Gson gson = new Gson();
+        final File localFile = File.createTempFile("data","json");
+        cloudable.getFile(localFile)
+            .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    // Successfully downloaded data to local file
+                    // ...
+                    JsonReader myJSON = null;
+                    try {
+                        myJSON = new JsonReader(new FileReader(localFile));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    String json = gson.toJson(myJSON);
+                    FileRecord[] data = gson.fromJson(json, FileRecord[].class);
+                    List<FileRecord> files = Arrays.asList(data);
+                    for (FileRecord file: files) {
+                        if(newKey.getText().toString().equals(file.key)){
+                            Toast.makeText(NewGroup.this, "Please make a different Key", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
 
-        files.add(new FileRecord(files.size() + 1, newGroup.getText().toString(),
-                "Folder", newGroup.getText().toString(), newKey.getText().toString(),
-                newAdminKey.getText().toString()));
+                    files.add(new FileRecord(files.size() + 1, newGroup.getText().toString(),
+                            "Folder", newGroup.getText().toString(), newKey.getText().toString(),
+                            newAdminKey.getText().toString()));
 
-        gson.toJson(files, new FileWriter(localFile));
-        cloudable.putFile(Uri.fromFile(localFile));
-
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+                    File tempFile = null;
+                    try {
+                        tempFile = File.createTempFile("update", "json");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    for (FileRecord file: files) {
+                        try {
+                            gson.toJson(file, new FileWriter(tempFile, true));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    cloudable.putFile(Uri.fromFile(tempFile)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // Get a URL to the uploaded content
+                            Intent intent = new Intent(NewGroup.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                    })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle unsuccessful uploads
+                                    // ...
+                                }
+                            });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle unsuccessful uploads
+                            // ...
+                            Toast.makeText(NewGroup.this, "Sorry there is now file yet", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    });
     }
 }
