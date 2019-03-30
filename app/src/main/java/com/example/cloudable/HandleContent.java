@@ -40,7 +40,7 @@ public class HandleContent {
             imageButton.setTag(parsedDirectory.getItemNames().get(i));
             imageButtons.add(imageButton);
         }
-    }
+     }
 
     public void addSubDirectory(HandleContent handleContent){
         this.handleContents.add(handleContent);
