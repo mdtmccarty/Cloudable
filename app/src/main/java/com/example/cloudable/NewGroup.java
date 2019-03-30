@@ -26,12 +26,17 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.json.JSONArray;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -95,9 +100,14 @@ public class NewGroup extends AppCompatActivity {
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    String json = gson.toJson(myJSON);
-                    FileRecord[] data = gson.fromJson(json, FileRecord[].class);
-                    List<FileRecord> files = Arrays.asList(data);
+                    String json = myJSON.toString();
+                    JsonParser jp = new JsonParser();
+                    JsonObject jo = jp.parse(json).getAsJsonObject();
+                    System.out.println(jo);
+                    //FileRecord[] data = gson.fromJson(json, FileRecord[].class);
+                    List<FileRecord> files = new ArrayList<>();
+                    gson.fromJson(json, FileRecord.class);
+                    //List<FileRecord> files = Arrays.asList(data);
                     for (FileRecord file: files) {
                         if(newKey.getText().toString().equals(file.key)){
                             Toast.makeText(NewGroup.this, "Please make a different Key", Toast.LENGTH_LONG).show();

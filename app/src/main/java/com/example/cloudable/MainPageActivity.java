@@ -50,12 +50,14 @@ public class MainPageActivity extends AppCompatActivity
         //TODO starting with the Main directory folder, then it's first child, then it's first child's first child,
         //TODO then if it's first child's first child doesn't have any children, put it's first child's second child and so on
         //TODO i.e. 1, 1a, 1ai, 1aii, 1aiii, 1b, 1bi, 1bii, 1c, 1d, 1di, 1dii...
+        /**
         masterList = new ArrayList<>();
 
         //First initialization of main screen
         master = new HandleContent(masterList.get(0),this);
         //populate all folders.
         master.recursDirectory(masterList, this);
+        **/
 
 
         androidImageButton = findViewById(R.id.webinarArchive);
