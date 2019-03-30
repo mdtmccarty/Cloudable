@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 
 android {
@@ -35,3 +36,4 @@ dependencies {
 }
 
 //apply plugin: 'com.google.gms.google-services'
+
