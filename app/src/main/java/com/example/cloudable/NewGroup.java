@@ -26,12 +26,17 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -89,40 +94,53 @@ public class NewGroup extends AppCompatActivity {
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     // Successfully downloaded data to local file
                     // ...
-                    JsonReader myJSON = null;
+
+                    FileReader myJson = null;
+
                     try {
-                        myJSON = new JsonReader(new FileReader(localFile));
+                        myJson = new FileReader(localFile);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    String json = gson.toJson(myJSON);
-                    FileRecord[] data = gson.fromJson(json, FileRecord[].class);
-                    List<FileRecord> files = Arrays.asList(data);
-                    for (FileRecord file: files) {
-                        if(newKey.getText().toString().equals(file.key)){
-                            Toast.makeText(NewGroup.this, "Please make a different Key", Toast.LENGTH_LONG).show();
-                            return;
+
+                    if(myJson != null) {
+                        Type token = new TypeToken<ArrayList<FileRecord>>(){}.getType();
+                        ArrayList<FileRecord> data = gson.fromJson(myJson, token);
+
+                        for (FileRecord file : data) {
+                            if (newKey.getText().toString().equals(file.key)) {
+                                Toast.makeText(NewGroup.this, "Please make a different Key", Toast.LENGTH_LONG).show();
+                                return;
+                            }
                         }
-                    }
 
-                    files.add(new FileRecord(files.size() + 1, newGroup.getText().toString(),
-                            "Folder", newGroup.getText().toString(), newKey.getText().toString(),
-                            newAdminKey.getText().toString()));
+                        data.add(new FileRecord(data.size() + 1, newGroup.getText().toString(),
+                                "Folder", newGroup.getText().toString(), newKey.getText().toString(),
+                                newAdminKey.getText().toString()));
 
-                    File tempFile = null;
-                    try {
-                        tempFile = File.createTempFile("update", "json");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    for (FileRecord file: files) {
                         try {
-                            gson.toJson(file, new FileWriter(tempFile, true));
+                            FileWriter writer = new FileWriter(localFile, false);
+                            writer.write(gson.toJson(data, token));
+                            writer.close();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
-                    cloudable.putFile(Uri.fromFile(tempFile)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    else{
+                        FileRecord first = new FileRecord(1, newGroup.getText().toString(),
+                                "Folder", newGroup.getText().toString(), newKey.getText().toString(),
+                                newAdminKey.getText().toString());
+
+                        try {
+                            FileWriter writer = new FileWriter(localFile, false);
+                            writer.write(gson.toJson(first, FileRecord[].class));
+                            writer.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    cloudable.putFile(Uri.fromFile(localFile)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             // Get a URL to the uploaded content
@@ -144,7 +162,6 @@ public class NewGroup extends AppCompatActivity {
                             // Handle unsuccessful uploads
                             // ...
                             Toast.makeText(NewGroup.this, "Sorry there is now file yet", Toast.LENGTH_LONG).show();
-                            return;
                         }
                     });
     }
