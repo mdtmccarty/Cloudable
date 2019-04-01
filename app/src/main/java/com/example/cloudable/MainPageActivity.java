@@ -30,6 +30,9 @@ public class MainPageActivity extends AppCompatActivity
     ArrayList<ParsedDirectory> masterList;
     HandleContent master;
 
+    //TODO set this groupName equal to the actual Group Name
+    public String groupName = "TestKey";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,7 @@ public class MainPageActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
 
         //TODO parse each JSON file into ParsedDirectory Objects, create an ArrayList of ParsedDirectory(s)
         //TODO starting with the Main directory folder, then it's first child, then it's first child's first child,

@@ -1,9 +1,11 @@
 package com.example.cloudable;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -69,8 +71,9 @@ public class AdminControl extends AppCompatActivity {
                 try {
                     localFile = File.createTempFile("data","json");
                     mainFolder = FirebaseStorage.getInstance().getReference();
+                    MainPageActivity mpa = new MainPageActivity();
                     System.out.println("M_TEXT: " + m_Text);
-                    mainFolder.child(m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
+                    mainFolder.child(mpa.groupName + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -87,5 +90,10 @@ public class AdminControl extends AppCompatActivity {
 
         builder.show();
 
+    }
+
+    public void createFile(View v){
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, 1);
     }
 }
