@@ -31,7 +31,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
+    private StorageReference groups;
 
 
     @Override
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         EditText key = findViewById(R.id.editText2);
         userName.setText(login.getString("userName", ""));
         key.setText(login.getString("key", ""));
+        groups = FirebaseStorage.getInstance().getReference().child("StorageData.json");
         //this is a comment that I am adding
         // ...
         mAuth = FirebaseAuth.getInstance();
@@ -77,26 +79,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void intentLogin(View view) throws IOException {
         EditText userName = findViewById(R.id.editText);
-        EditText key = findViewById(R.id.editText2);
+        final EditText key = findViewById(R.id.editText2);
+        final Gson gson = new Gson();
+        final File groupRecord = File.createTempFile("groups","json");
+
         SharedPreferences sharedPreferences = getSharedPreferences("loginInfo", MODE_PRIVATE);
         sharedPreferences.edit().putString("userName", userName.getText().toString()).apply();
         sharedPreferences.edit().putString("key", key.getText().toString()).apply();
-        readGroup(view);
-        System.out.println("creating intent!");
-    }
 
-    public void intentNewGroup(View view) {
-        Intent intent = new Intent(this, NewGroup.class);
-        startActivity(intent);
-    }
-
-    public void readGroup(View view) throws IOException {
-        final Gson gson = new Gson();
-        final File groupRecord = File.createTempFile("groups","json");
-        final EditText password = findViewById(R.id.newKey);
-
-        StorageReference groups = FirebaseStorage.getInstance().getReference();
-        groups.child("StorageData.json");
         groups.getFile(groupRecord)
                 .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
@@ -111,22 +101,32 @@ public class MainActivity extends AppCompatActivity {
                             Type token = new TypeToken<ArrayList<FileRecord>>() {
                             }.getType();
                             ArrayList<FileRecord> files = gson.fromJson(data, token);
-
+                            boolean login = false;
                             for (FileRecord file : files) {
-                                if (password.getText().toString().equals(file.fileName)) {
+                                if (key.getText().toString().equals(file.key)) {
                                     Intent intent = new Intent(MainActivity.this, MainPageActivity.class);
                                     intent.putExtra("group", file.fileName);
                                     startActivity(intent);
+                                    login = true;
                                 }
                             }
-                            Toast.makeText(MainActivity.this,"Incorrect Key! Please enter again", Toast.LENGTH_LONG).show();
+                            if(login == false){
+                                Toast.makeText(MainActivity.this,"Incorrect Key! Please enter again", Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(MainActivity.this, "Sorry! Server may be down. Please try again latter.", Toast.LENGTH_LONG).show();
-                }
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this, "Sorry! Server may be down. Please try again latter.", Toast.LENGTH_LONG).show();
+            }
         });
+
+        System.out.println("creating intent!");
+    }
+
+    public void intentNewGroup(View view) {
+        Intent intent = new Intent(this, NewGroup.class);
+        startActivity(intent);
     }
 }
