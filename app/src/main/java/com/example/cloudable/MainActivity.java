@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -32,7 +31,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseAuth mAuth;
 
 
     @Override
@@ -46,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         key.setText(login.getString("key", ""));
         //this is a comment that I am adding
         // ...
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if(currentUser == null){
+        if (currentUser == null) {
             mAuth.signInAnonymously()
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -81,14 +81,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("loginInfo", MODE_PRIVATE);
         sharedPreferences.edit().putString("userName", userName.getText().toString()).apply();
         sharedPreferences.edit().putString("key", key.getText().toString()).apply();
-        String group = readGroup(key);
-        if(group == null){
-            Toast.makeText(this,"Incorrect Key! Please enter again", Toast.LENGTH_LONG).show();
-            return;
-        }
-        Intent intent = new Intent(this, MainPageActivity.class);
-        intent.putExtra("group", group);
-        startActivity(intent);
+        readGroup(view);
         System.out.println("creating intent!");
     }
 
@@ -97,38 +90,43 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public String readGroup(final EditText password) throws IOException {
+    public void readGroup(View view) throws IOException {
         final Gson gson = new Gson();
-        final File localFile = File.createTempFile("data","json");
-        final String[] result = new String[1];
-        result[0] = null;
+        final File groupRecord = File.createTempFile("groups","json");
+        final EditText password = findViewById(R.id.newKey);
 
         StorageReference groups = FirebaseStorage.getInstance().getReference();
         groups.child("StorageData.json");
-        groups.getFile(localFile)
+        groups.getFile(groupRecord)
                 .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         FileReader data = null;
                         try {
-                            data = new FileReader(localFile);
+                            data = new FileReader(groupRecord);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
-                        Type token = new TypeToken<ArrayList<FileRecord>>(){}.getType();
-                        ArrayList<FileRecord> files = gson.fromJson(data, token);
+                        if(data != null) {
+                            Type token = new TypeToken<ArrayList<FileRecord>>() {
+                            }.getType();
+                            ArrayList<FileRecord> files = gson.fromJson(data, token);
 
-                        for(FileRecord file: files){
-                            if(file.key.equals(password.getText().toString())){
-                                result[0] = file.fileName;
+                            for (FileRecord file : files) {
+                                if (password.getText().toString().equals(file.fileName)) {
+                                    Intent intent = new Intent(MainActivity.this, MainPageActivity.class);
+                                    intent.putExtra("group", file.fileName);
+                                    startActivity(intent);
+                                }
                             }
+                            Toast.makeText(MainActivity.this,"Incorrect Key! Please enter again", Toast.LENGTH_LONG).show();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(MainActivity.this, "Sorry! Server may be down. Please try again latter.", Toast.LENGTH_LONG).show();
                 }
         });
-        return result[0];
     }
 }
