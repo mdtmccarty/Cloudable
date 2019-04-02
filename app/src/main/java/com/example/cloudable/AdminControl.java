@@ -3,6 +3,7 @@ package com.example.cloudable;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -17,13 +18,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class AdminControl extends AppCompatActivity {
@@ -32,7 +36,8 @@ public class AdminControl extends AppCompatActivity {
 
     private String m_Text = "";
     private StorageReference mainFolder;
-    private StorageReference newFolder;
+    private Uri filePath;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,18 +70,36 @@ public class AdminControl extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 m_Text = input.getText().toString();
+                mainFolder = FirebaseStorage.getInstance().getReference();
+                MainPageActivity mpa = new MainPageActivity();
+
 
                 final Gson gson = new Gson();
-                final File localFile;
+                JsonObject jo = new JsonObject();
+                jo.addProperty("name",m_Text);
+                jo.addProperty("parent",mpa.groupName);
+                File localFile = null;
+
                 try {
                     localFile = File.createTempFile("data","json");
-                    mainFolder = FirebaseStorage.getInstance().getReference();
-                    MainPageActivity mpa = new MainPageActivity();
                     System.out.println("M_TEXT: " + m_Text);
-                    mainFolder.child(mpa.groupName + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                FileWriter fileWriter = null;
+                try {
+                    fileWriter = new FileWriter(localFile, false);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    fileWriter.write(gson.toJson(jo));
+                    fileWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mainFolder.child(mpa.groupName + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
+
 
             }
         });
@@ -92,8 +115,25 @@ public class AdminControl extends AppCompatActivity {
 
     }
 
-    public void createFile(View v){
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, 1);
+    public void uploadPicture(View v){
+        mainFolder = FirebaseStorage.getInstance().getReference();
+        //MainPageActivity mpa = new MainPageActivity();
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 71);
+       // onActivityResult(71,RESULT_OK,intent);
+//        filePath = intent.getData();
+//        mainFolder.child("TestKey").putFile(filePath);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode == 71){
+            if (resultCode == RESULT_OK){
+                filePath = data.getData();
+                mainFolder.child("TestKey/").putFile(filePath);
+            }
+        }
     }
 }

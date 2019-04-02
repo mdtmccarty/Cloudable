@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         String group = readGroup(key);
         if(group == null){
             Toast.makeText(this,"Incorrect Key! Please enter again", Toast.LENGTH_LONG).show();
-            //return;
+            // return;
         }
         Intent intent = new Intent(this, MainPageActivity.class);
         intent.putExtra("group", group);

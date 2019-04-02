@@ -20,14 +20,44 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/UploadFile"
+        android:id="@+id/UploadPicture"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:onClick="createFile"
-        android:text="Upload New File"
+        android:onClick="uploadPicture"
+        android:text="Upload Picture File"
         app:layout_constraintEnd_toEndOf="@+id/CreateFolder"
         app:layout_constraintStart_toStartOf="@+id/CreateFolder"
         app:layout_constraintTop_toBottomOf="@+id/CreateFolder" />
+
+    <Button
+        android:id="@+id/UploadAudio"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Upload Audio File"
+        app:layout_constraintEnd_toEndOf="@+id/CreateFolder"
+        app:layout_constraintStart_toStartOf="@+id/UploadPicture"
+        app:layout_constraintTop_toBottomOf="@+id/UploadPicture" />
+
+    <Button
+        android:id="@+id/UploadDocument"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Upload Document File"
+        app:layout_constraintEnd_toEndOf="@+id/UploadAudio"
+        app:layout_constraintStart_toStartOf="@+id/UploadAudio"
+        app:layout_constraintTop_toBottomOf="@+id/UploadAudio" />
+
+    <Button
+        android:id="@+id/UploadVideo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Upload Video File"
+        app:layout_constraintEnd_toEndOf="@+id/UploadDocument"
+        app:layout_constraintStart_toStartOf="@+id/UploadDocument"
+        app:layout_constraintTop_toBottomOf="@+id/UploadDocument" />
 
 </android.support.constraint.ConstraintLayout>
