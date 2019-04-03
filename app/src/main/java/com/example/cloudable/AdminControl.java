@@ -122,9 +122,6 @@ public class AdminControl extends AppCompatActivity {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), 71);
-       // onActivityResult(71,RESULT_OK,intent);
-//        filePath = intent.getData();
-//        mainFolder.child("TestKey").putFile(filePath);
     }
 
     @Override

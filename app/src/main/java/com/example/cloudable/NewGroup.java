@@ -19,6 +19,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -151,5 +152,28 @@ public class NewGroup extends AppCompatActivity {
                             Toast.makeText(NewGroup.this, "Sorry there is now file yet", Toast.LENGTH_LONG).show();
                         }
                     });
+        final Gson newGson = new Gson();
+        JsonObject jo = new JsonObject();
+        jo.addProperty("name",newGroup.getText().toString());
+        File newLocalFile = null;
+
+        try {
+            newLocalFile = File.createTempFile("data","json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(newLocalFile, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            fileWriter.write(gson.toJson(jo));
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        cloudable.getParent().child(newGroup.getText().toString() + "/StorageData.json").putFile(Uri.fromFile(newLocalFile));
     }
 }
