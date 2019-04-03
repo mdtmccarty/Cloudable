@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,6 +20,13 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,15 +90,40 @@ public class MainPageActivity extends AppCompatActivity
         });
     }
 
-    public void play(View view){
+//    public void play(View view){
+//
+//        if (player == null){
+//            player = MediaPlayer.create(this,R.raw.recording);
+//        }
+//
+//        player.start();
+//    }
 
-        if (player == null){
-            player = MediaPlayer.create(this,R.raw.recording);
+    public void download(View view){
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://ssc-files.appspot.com");
+        StorageReference  islandRef = storageRef.child("recording.mp3");
+
+        File rootPath = new File(Environment.getExternalStorageDirectory(), "recording");
+        if(!rootPath.exists()) {
+            rootPath.mkdirs();
         }
 
-        player.start();
-    }
+        final File localFile = new File(rootPath,"recording");
 
+        islandRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                Log.e("firebase ",";local tem file created  created " +localFile.toString());
+                //  updateDb(timestamp,localFile.toString(),position);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.e("firebase ",";local tem file not created  created " +exception.toString());
+            }
+        });
+    }
     public void intentAdminControl(){
         Intent intent = new Intent(this, AdminControl.class);
         startActivity(intent);
