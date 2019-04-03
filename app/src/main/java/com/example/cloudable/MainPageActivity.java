@@ -113,7 +113,6 @@ public class MainPageActivity extends AppCompatActivity
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override

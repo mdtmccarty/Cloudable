@@ -36,56 +36,6 @@ public class AudioPlayer extends AppCompatActivity {
         //StorageReference riversRef = mStorageRef.child("images/rivers.jpg");
     }
 
-    public void download(View view) throws IOException {
-        final File localFile = File.createTempFile("audio", "mp3");
-
-        mStorageRef.child("recording.mp3").getFile(localFile)
-                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        MediaPlayer mp = new MediaPlayer();
-                        try {
-                            mp.setDataSource(localFile.getAbsolutePath());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        mp.start();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(AudioPlayer.this, "didnt work buddy", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        });
-    }
-
-//    public void download(View view){
-//        StorageReference riversRef = mStorageRef.child("recording.mp3");
-//        File localFile = null;
-//        try {
-//            localFile = File.createTempFile("recording", "mp3");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        riversRef.getFile(localFile)
-//                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-//
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                // Handle failed download
-//                // ...
-//            }
-//        });
-//    }
-
-//    private void downloadFiles() {
-//    }
-
 //    public void play(View view){
 //
 //        if (player == null){
