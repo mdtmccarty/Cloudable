@@ -35,6 +35,7 @@ import java.util.ArrayList;
  */
 public class NewGroup extends AppCompatActivity {
     private StorageReference cloudable;
+    private StorageReference root;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class NewGroup extends AppCompatActivity {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         cloudable = FirebaseStorage.getInstance().getReference().child("StorageData.json");
+        root = FirebaseStorage.getInstance().getReference();
     }
 
     /**
@@ -152,7 +154,6 @@ public class NewGroup extends AppCompatActivity {
                             Toast.makeText(NewGroup.this, "Sorry there is now file yet", Toast.LENGTH_LONG).show();
                         }
                     });
-        final Gson newGson = new Gson();
         JsonObject jo = new JsonObject();
         jo.addProperty("name",newGroup.getText().toString());
         File newLocalFile = null;
@@ -174,6 +175,6 @@ public class NewGroup extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cloudable.getParent().child(newGroup.getText().toString() + "/StorageData.json").putFile(Uri.fromFile(newLocalFile));
+        root.child(newGroup.getText().toString() + "/StorageData.json").putFile(Uri.fromFile(newLocalFile));
     }
 }
