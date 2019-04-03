@@ -17,45 +17,69 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import static java.security.AccessController.getContext;
 
 public class AudioPlayer extends AppCompatActivity {
-    StorageReference sR, ref;
-    FirebaseStorage fS;
+    private StorageReference mStorageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_player);
-
-
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        //StorageReference riversRef = mStorageRef.child("images/rivers.jpg");
     }
 
-    public void download(View view){
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl("<your_bucket>");
-        StorageReference  islandRef = storageRef.child("recording.mp3");
+    public void download(View view) throws IOException {
+        final File localFile = File.createTempFile("audio", "mp3");
 
-        File rootPath = new File(Environment.getExternalStorageDirectory(), "file_name");
-        if(!rootPath.exists()) {
-            rootPath.mkdirs();
-        }
-
-        final File localFile = new File(rootPath,"imageName.txt");
-
-        islandRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Log.e("firebase ",";local tem file created  created " +localFile.toString());
-                //  updateDb(timestamp,localFile.toString(),position);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
+        mStorageRef.child("recording.mp3").getFile(localFile)
+                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        MediaPlayer mp = new MediaPlayer();
+                        try {
+                            mp.setDataSource(localFile.getAbsolutePath());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        mp.start();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Log.e("firebase ",";local tem file not created  created " +exception.toString());
+                return;
             }
         });
     }
+
+//    public void download(View view){
+//        StorageReference riversRef = mStorageRef.child("recording.mp3");
+//        File localFile = null;
+//        try {
+//            localFile = File.createTempFile("recording", "mp3");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        riversRef.getFile(localFile)
+//                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception exception) {
+//                // Handle failed download
+//                // ...
+//            }
+//        });
+//    }
 
 //    private void downloadFiles() {
 //    }
