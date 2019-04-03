@@ -2,6 +2,7 @@ package com.example.cloudable;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private StorageReference groups;
+    private StorageReference mStorageRef;
 
 
     @Override
@@ -75,6 +77,30 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    public void download(View view) throws IOException {
+        final File localFile = File.createTempFile("audio", "mp3");
+
+        mStorageRef.child("recording.mp3").getFile(localFile)
+                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        MediaPlayer mp = new MediaPlayer();
+                        try {
+                            mp.setDataSource(localFile.getAbsolutePath());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        mp.start();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                //Toast.makeText(AudioPlayer.this, "didnt work buddy", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        });
     }
 
     public void intentLogin(View view) throws IOException {
