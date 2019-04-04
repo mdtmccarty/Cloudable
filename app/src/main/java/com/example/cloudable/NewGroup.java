@@ -19,6 +19,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -102,6 +103,10 @@ public class NewGroup extends AppCompatActivity {
                                 Toast.makeText(NewGroup.this, "Please make a different Key", Toast.LENGTH_LONG).show();
                                 return;
                             }
+                            if (newGroup.getText().toString().equals(file.fileName)){
+                                Toast.makeText(NewGroup.this, "There is already a group with this name. Please enter a diffrent name", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                         }
 
                         data.add(new FileRecord(data.size() + 1, newGroup.getText().toString(),
@@ -154,9 +159,7 @@ public class NewGroup extends AppCompatActivity {
                             Toast.makeText(NewGroup.this, "Sorry there is now file yet", Toast.LENGTH_LONG).show();
                         }
                     });
-        JsonObject jo = new JsonObject();
-        jo.addProperty("name",newGroup.getText().toString());
-        jo.addProperty("numSubDir", "0");
+        JsonArray jo = new JsonArray();
         File newLocalFile = null;
 
         try {

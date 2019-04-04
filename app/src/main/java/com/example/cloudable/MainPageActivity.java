@@ -27,8 +27,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -40,6 +43,7 @@ public class MainPageActivity extends AppCompatActivity
     ArrayList<ParsedDirectory> masterList;
     HandleContent master;
     private StorageReference mStorageRef;
+    File mP3;
 
     //TODO set this groupName equal to the actual Group Name
     public String groupName = "TestKey";
@@ -97,37 +101,66 @@ public class MainPageActivity extends AppCompatActivity
         });
     }
 
-//    public void play(View view){
+//    public void download(View view) throws IOException {
+//        final File localFile = File.createTempFile("audio", "mp3");
 //
-//        if (player == null){
-//            player = MediaPlayer.create(this,R.raw.recording);
-//        }
-//
-//        player.start();
-//    }
-
-//    public void download(View view){
-//        StorageReference riversRef = mStorageRef.child("recording.mp3");
-//        File localFile = null;
-//        try {
-//            localFile = File.createTempFile("recording", "mp3");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        riversRef.getFile(localFile)
+//        mStorageRef.child("recording.mp3").getFile(localFile)
 //                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
 //                    @Override
 //                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-//
+//                        Log.d("audio player", "something went right");
+//                        MediaPlayer mp = new MediaPlayer();
+//                        try {
+//                            mp.setDataSource(localFile.getAbsolutePath());
+//                            mp.prepare();
+//                            mp.start();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
 //                    }
 //                }).addOnFailureListener(new OnFailureListener() {
 //            @Override
 //            public void onFailure(@NonNull Exception exception) {
-//                // Handle failed download
-//                // ...
+//                //Toast.makeText(AudioPlayer.this, "didnt work buddy", Toast.LENGTH_SHORT).show();
+//                Log.d("audio player", "something went wrong");
+//                return;
 //            }
 //        });
 //    }
+
+    public void download(View view) throws IOException {
+        StorageReference anotherStorRef = mStorageRef.child("recording.mp3");
+
+        final long MAX_SIZE = 1024 * 1024;
+
+        anotherStorRef.getBytes(MAX_SIZE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Log.d("audio player", "something went right");
+                try {
+                    mP3 = File.createTempFile("recording", "mp3", getCacheDir());
+                    //mP3.deleteOnExit();
+                    FileOutputStream fos = new FileOutputStream(mP3);
+                    fos.write(bytes);
+                    fos.close();
+
+                    Log.d("file location", mP3.getPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void play(View view) throws IOException {
+        FileInputStream fis = new FileInputStream(mP3);
+        MediaPlayer mp = new MediaPlayer();
+        mp.reset();
+        mp.setDataSource(fis.getFD());
+        mp.prepare();
+        mp.start();
+    }
+
     public void intentAdminControl(){
         Intent intent = new Intent(this, AdminControl.class);
         startActivity(intent);
