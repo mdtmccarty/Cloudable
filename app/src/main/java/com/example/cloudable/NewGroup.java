@@ -156,6 +156,7 @@ public class NewGroup extends AppCompatActivity {
                     });
         JsonObject jo = new JsonObject();
         jo.addProperty("name",newGroup.getText().toString());
+        jo.addProperty("numSubDir", "0");
         File newLocalFile = null;
 
         try {
