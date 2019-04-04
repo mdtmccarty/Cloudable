@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.io.File;
@@ -75,9 +76,7 @@ public class AdminControl extends AppCompatActivity {
 
 
                 final Gson gson = new Gson();
-                JsonObject jo = new JsonObject();
-                jo.addProperty("name",m_Text);
-                jo.addProperty("parent",mpa.groupName);
+                JsonArray jo = new JsonArray();
                 File localFile = null;
 
                 try {
