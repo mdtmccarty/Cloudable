@@ -59,6 +59,7 @@ public class AudioPlayer extends AppCompatActivity {
                 try {
                     outputStream = openFileOutput(FILE_NAME, MODE_PRIVATE);
                     outputStream.write(bytes);
+                    Toast.makeText(AudioPlayer.this, "File downloaded successfully.", Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
@@ -71,23 +72,41 @@ public class AudioPlayer extends AppCompatActivity {
                     }
                 }
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(AudioPlayer.this, "Download failed. Make sure file exists before continuing.", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
     public void play(View view) throws IOException {
         FileInputStream fis = null;
-        fis = openFileInput(FILE_NAME);
-        MediaPlayer mp = new MediaPlayer();
-        mp.reset();
-        mp.setDataSource(fis.getFD());
-        mp.prepare();
-        mp.start();
-
+        try {
+            fis = openFileInput(FILE_NAME);
+            MediaPlayer mp = new MediaPlayer();
+            mp.reset();
+            mp.setDataSource(fis.getFD());
+            mp.prepare();
+            mp.start();
+        } catch (IOException e) {
+            Toast.makeText(this, "Play Failed. Download file before playing.", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteFile(View v){
         File dir = getFilesDir();
         File file = new File(dir, FILE_NAME);
-        file.delete();
+        if (file.length() != 0) {
+            file.delete();
+            Toast.makeText(this, "File Deleted", Toast.LENGTH_SHORT).show();
+        } else{
+            Toast.makeText(this, "No file to delete.", Toast.LENGTH_SHORT).show();
+        }
     }
 }
