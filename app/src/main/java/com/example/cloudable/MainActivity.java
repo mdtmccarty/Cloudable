@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                                     Intent intent = new Intent(MainActivity.this, MainPageActivity.class);
                                     intent.putExtra("group", file.fileName);
                                     intent.putExtra("key", file.key);
-                                    intent.putExtra("amdin", file.adminKey);
+                                    intent.putExtra("admin", file.adminKey);
                                     startActivity(intent);
                                     login = true;
                                 }

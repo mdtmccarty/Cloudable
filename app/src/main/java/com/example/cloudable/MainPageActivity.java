@@ -47,6 +47,9 @@ public class MainPageActivity extends AppCompatActivity
     private StorageReference mStorageRef;
     File localFile;
     final String FILE_NAME = "audioFiles.mp3";
+    String getGroupName;
+    String getKey;
+    String getAdminKey;
 
     //TODO set this groupName equal to the actual Group Name
     public String groupName = "TestKey";
@@ -68,6 +71,10 @@ public class MainPageActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Bundle extras = getIntent().getExtras();
+        getGroupName = extras.getString("group","");
+        getKey = extras.getString("key", "");
+        getAdminKey = extras.getString("admin", "");
 
         //TODO parse each JSON file into ParsedDirectory Objects, create an ArrayList of ParsedDirectory(s)
         //TODO starting with the Main directory folder, then it's first child, then it's first child's first child,
@@ -197,6 +204,9 @@ public class MainPageActivity extends AppCompatActivity
 
     public void intentAdminControl(){
         Intent intent = new Intent(this, AdminControl.class);
+        intent.putExtra("group", getGroupName);
+        intent.putExtra("key", getKey);
+        intent.putExtra("admin", getAdminKey);
         startActivity(intent);
     }
 
