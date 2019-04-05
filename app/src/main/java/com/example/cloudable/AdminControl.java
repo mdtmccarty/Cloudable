@@ -99,6 +99,8 @@ public class AdminControl extends AppCompatActivity {
 
                 final Gson gson = new Gson();
                 JsonArray jo = new JsonArray();
+                int recordNumber = 0;
+                String path;
                 File localFile = null;
 
                         try {
@@ -120,14 +122,15 @@ public class AdminControl extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         if (folderLocation.equals("main")){
+                            path = mpa.groupName + "/" + m_Text;
                             mainFolder.child(mpa.groupName + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
                         }
                         else{
+                            path = mpa.groupName + "/" + folderLocation + "/" + m_Text;
                             mainFolder.child(mpa.groupName + "/" + folderLocation + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
                         }
-
-
-
+                        //TODO place this FileRecord in the parent's JSON File.
+                        FileRecord newRecord = new FileRecord(recordNumber, m_Text, "folder", path, "0", "0");
                     }
                 });
 
@@ -153,6 +156,7 @@ public class AdminControl extends AppCompatActivity {
     }
 
     public void uploadPicture(View v){
+
         mainFolder = FirebaseStorage.getInstance().getReference();
         //MainPageActivity mpa = new MainPageActivity();
         Intent intent = new Intent();
