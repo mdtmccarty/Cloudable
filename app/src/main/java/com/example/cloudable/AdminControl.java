@@ -62,6 +62,7 @@ public class AdminControl extends AppCompatActivity {
     }
 
     public void createFolder(View v) {
+        final Bundle extras = getIntent().getExtras();
         AlertDialog.Builder folderBuilder = new AlertDialog.Builder(this);
         folderBuilder.setTitle("In which folder would you like to create the new folder?");
 
@@ -130,7 +131,8 @@ public class AdminControl extends AppCompatActivity {
                             mainFolder.child(mpa.groupName + "/" + folderLocation + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
                         }
                         //TODO place this FileRecord in the parent's JSON File.
-                        FileRecord newRecord = new FileRecord(recordNumber, m_Text, "folder", path, "0", "0");
+                        FileRecord newRecord = new FileRecord(recordNumber, extras.getString("group"), "folder", path, extras.getString("key"), extras.getString("admin"));
+
                     }
                 });
 
