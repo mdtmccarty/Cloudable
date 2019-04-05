@@ -1,6 +1,8 @@
 package com.example.cloudable;
 
+import android.content.Context;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -42,11 +44,18 @@ public class AudioPlayer extends AppCompatActivity {
     public void download(View view){
         StorageReference anotherStorRef = mStorageRef.child("recording.mp3");
         final long MAX_SIZE = 1024 * 1024;
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (cm.getActiveNetworkInfo() == null){
+            Toast.makeText(AudioPlayer.this, "Download failure. Check internet connection before continuing.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         anotherStorRef.getBytes(MAX_SIZE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
                 FileOutputStream outputStream = null;
+
                 try {
                     outputStream = openFileOutput(FILE_NAME, MODE_PRIVATE);
                     outputStream.write(bytes);
@@ -68,7 +77,6 @@ public class AudioPlayer extends AppCompatActivity {
     public void play(View view) throws IOException {
         FileInputStream fis = null;
         fis = openFileInput(FILE_NAME);
-        InputStreamReader isr = new InputStreamReader(fis);
         MediaPlayer mp = new MediaPlayer();
         mp.reset();
         mp.setDataSource(fis.getFD());
