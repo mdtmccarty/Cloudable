@@ -35,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private StorageReference groups;
 
+    String group;
+    String key;
+    String admin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

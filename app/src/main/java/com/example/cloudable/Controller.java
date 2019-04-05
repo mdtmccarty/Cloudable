@@ -63,17 +63,23 @@ public class Controller {
 
     private void makeDirectoryList(StorageReference reference){
         readJson(reference.child("StorageData.json"));
-        for(FileRecord file: files.get(index)){
-            if(file.fileType.equals("Folder")){
-                directories.get(index).numSubDir++;
-                directories.add(new ParsedDirectory(file.fileName, file.filePath));
-                StorageReference folder = reference.child(file.fileName);
-                index++;
-                makeDirectoryList(folder);
+
+        try {
+            for(FileRecord file: files.get(index)){
+                if(file.fileType.equals("Folder")){
+                    directories.get(index).numSubDir++;
+                    directories.add(new ParsedDirectory(file.fileName, file.filePath));
+                    StorageReference folder = reference.child(file.fileName);
+                    index++;
+                    makeDirectoryList(folder);
+                }
+                directories.get(index).itemNames.add(file.fileName);
+                directories.get(index).itemPaths.put(file.fileName, file.filePath);
             }
-            directories.get(index).itemNames.add(file.fileName);
-            directories.get(index).itemPaths.put(file.fileName, file.filePath);
+            index--;
+        } catch (Exception e) {
+            e.printStackTrace();
+            directories = null;
         }
-        index--;
     }
 }

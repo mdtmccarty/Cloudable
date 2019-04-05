@@ -98,6 +98,7 @@ public class AdminControl extends AppCompatActivity {
 
                 final Gson gson = new Gson();
                 JsonArray jo = new JsonArray();
+                StorageReference parent = null;
                 String path;
                 File localFile = null;
 
@@ -121,10 +122,12 @@ public class AdminControl extends AppCompatActivity {
                         }
                         if (folderLocation.equals("main")){
                             path = extras.getString("group") + "/" + m_Text;
+                            parent = mainFolder.child(extras.getString("group"));
                             mainFolder.child(extras.getString("group") + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
                         }
                         else{
                             path = extras.getString("group") + "/" + folderLocation + "/" + m_Text;
+                            parent = mainFolder.child(extras.getString("group") + "/" + folderLocation);
                             mainFolder.child(extras.getString("group") + "/" + folderLocation + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
                         }
                         //TODO place this FileRecord in the parent's JSON File.
