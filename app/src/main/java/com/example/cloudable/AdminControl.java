@@ -146,7 +146,7 @@ public class AdminControl extends AppCompatActivity {
                         //TODO place this FileRecord in the parent's JSON File.
 
                         final File finalLocalFile = localFile;
-                        final FileRecord newRecord = new FileRecord(extras.getString("group"), "folder", path, extras.getString("key"), extras.getString("admin"));
+                        final FileRecord newRecord = new FileRecord(m_Text, "folder", path, extras.getString("key"), extras.getString("admin"));
                         final StorageReference finalParent = parent;
                         parent.child("StorageData.json").getFile(localFile).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
                             @Override
