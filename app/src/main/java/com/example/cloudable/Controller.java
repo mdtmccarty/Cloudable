@@ -48,7 +48,8 @@ public class Controller {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                 try {
-                    files.add((ArrayList<FileRecord>) gson.fromJson(new FileReader(localFile), token));
+                    ArrayList<FileRecord> data = gson.fromJson(new FileReader(localFile), token);
+                    files.add(data);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
