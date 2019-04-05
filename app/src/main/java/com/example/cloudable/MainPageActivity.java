@@ -2,10 +2,7 @@ package com.example.cloudable;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -20,22 +17,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class MainPageActivity extends AppCompatActivity
@@ -47,12 +33,12 @@ public class MainPageActivity extends AppCompatActivity
     private StorageReference mStorageRef;
     File localFile;
     final String FILE_NAME = "audioFiles.mp3";
-    String getGroupName;
     String getKey;
     String getAdminKey;
+    Controller controller;
 
     //TODO set this groupName equal to the actual Group Name
-    public String groupName = "TestKey";
+    public String groupName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +58,11 @@ public class MainPageActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         Bundle extras = getIntent().getExtras();
-        getGroupName = extras.getString("group","");
+        groupName = extras.getString("group","");
         getKey = extras.getString("key", "");
         getAdminKey = extras.getString("admin", "");
+
+        controller = new Controller(groupName);
 
         //TODO parse each JSON file into ParsedDirectory Objects, create an ArrayList of ParsedDirectory(s)
         //TODO starting with the Main directory folder, then it's first child, then it's first child's first child,
@@ -114,7 +102,7 @@ public class MainPageActivity extends AppCompatActivity
 
     public void intentAdminControl(){
         Intent intent = new Intent(this, AdminControl.class);
-        intent.putExtra("group", getGroupName);
+        intent.putExtra("group", groupName);
         intent.putExtra("key", getKey);
         intent.putExtra("admin", getAdminKey);
         startActivity(intent);

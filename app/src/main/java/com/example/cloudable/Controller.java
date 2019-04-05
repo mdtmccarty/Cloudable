@@ -43,7 +43,7 @@ public class Controller {
         makeDirectoryList(cloudable);
     }
 
-    public void readJson(StorageReference reference){
+    private void readJson(StorageReference reference){
         reference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -61,7 +61,7 @@ public class Controller {
         });
     }
 
-    public void makeDirectoryList(StorageReference reference){
+    private void makeDirectoryList(StorageReference reference){
         readJson(reference.child("StorageData.json"));
         for(FileRecord file: files.get(index)){
             if(file.fileType.equals("Folder")){
