@@ -30,9 +30,6 @@ public class MainPageActivity extends AppCompatActivity
     SharedPreferences sp;
     ArrayList<ParsedDirectory> masterList;
     HandleContent master;
-    private StorageReference mStorageRef;
-    File localFile;
-    final String FILE_NAME = "audioFiles.mp3";
     String getKey;
     String getAdminKey;
     Controller controller;
@@ -42,7 +39,6 @@ public class MainPageActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mStorageRef = FirebaseStorage.getInstance().getReference();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
         Toolbar toolbar = findViewById(R.id.toolbar);
