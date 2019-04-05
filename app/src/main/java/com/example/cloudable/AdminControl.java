@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -22,15 +23,26 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class AdminControl extends AppCompatActivity {
 
@@ -42,6 +54,7 @@ public class AdminControl extends AppCompatActivity {
     private StorageReference mainFolder;
     private Uri filePath;
     private ImageView imageView;
+    Type token = new TypeToken<ArrayList<FileRecord>>(){}.getType();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,8 +144,43 @@ public class AdminControl extends AppCompatActivity {
                             mainFolder.child(extras.getString("group") + "/" + folderLocation + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
                         }
                         //TODO place this FileRecord in the parent's JSON File.
-                        FileRecord newRecord = new FileRecord(extras.getString("group"), "folder", path, extras.getString("key"), extras.getString("admin"));
 
+                        final File finalLocalFile = localFile;
+                        final FileRecord newRecord = new FileRecord(extras.getString("group"), "folder", path, extras.getString("key"), extras.getString("admin"));
+                        final StorageReference finalParent = parent;
+                        parent.child("StorageData.json").getFile(localFile).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                                ArrayList<FileRecord> files = null;
+                                try {
+                                    files = gson.fromJson(new FileReader(finalLocalFile),token);
+                                    files.add(newRecord);
+                                    FileWriter fileWriter1 = new FileWriter(finalLocalFile);
+                                    fileWriter1.write(gson.toJson(files, token));
+                                    fileWriter1.close();
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                finalParent.child("StorageData.json").putFile(Uri.fromFile(finalLocalFile)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                    }
+                                });
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        });
                     }
                 });
 
@@ -160,7 +208,6 @@ public class AdminControl extends AppCompatActivity {
     public void uploadPicture(View v){
 
         mainFolder = FirebaseStorage.getInstance().getReference();
-        //MainPageActivity mpa = new MainPageActivity();
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
