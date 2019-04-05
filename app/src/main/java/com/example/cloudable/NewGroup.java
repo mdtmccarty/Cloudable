@@ -104,7 +104,7 @@ public class NewGroup extends AppCompatActivity {
                                 return;
                             }
                             if (newGroup.getText().toString().equals(file.fileName)){
-                                Toast.makeText(NewGroup.this, "There is already a group with this name. Please enter a diffrent name", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(NewGroup.this, "There is already a group with this name. Please enter a different name", Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }

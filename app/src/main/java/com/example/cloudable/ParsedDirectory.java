@@ -19,6 +19,7 @@ public class ParsedDirectory {
         itemNames = new ArrayList<>();
         itemPaths = new HashMap<>();
         numSubDir = 0;
+
     }
 
     public void addItem(String itemName, String itemPath, boolean subDir) {
