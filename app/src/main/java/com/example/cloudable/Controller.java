@@ -21,6 +21,11 @@ public class Controller {
     Gson gson = new Gson();
     Type token = new TypeToken<ArrayList<FileRecord>>(){}.getType();
     ArrayList<ArrayList<FileRecord>> files;
+
+    public ArrayList<ParsedDirectory> getDirectories() {
+        return directories;
+    }
+
     ArrayList<ParsedDirectory> directories;
     File localFile;
     int index = 0;
