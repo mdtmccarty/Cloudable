@@ -77,12 +77,9 @@ public class AudioPlayer extends AppCompatActivity {
 
     }
 
-//    public void play(View view){
-//
-//        if (player == null){
-//            player = MediaPlayer.create(this,R.raw.recording);
-//        }
-//
-//        player.start();
-//    }
+    public void deleteFile(View v){
+        File dir = getFilesDir();
+        File file = new File(dir, FILE_NAME);
+        file.delete();
+    }
 }
