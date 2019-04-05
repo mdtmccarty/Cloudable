@@ -78,7 +78,6 @@ public class AdminControl extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 folderLocation = inputFolder.getText().toString();
                 mainFolder = FirebaseStorage.getInstance().getReference();
-                MainPageActivity mpa = new MainPageActivity();
 
 
 
@@ -95,12 +94,10 @@ public class AdminControl extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         m_Text = input.getText().toString();
                         mainFolder = FirebaseStorage.getInstance().getReference();
-                        MainPageActivity mpa = new MainPageActivity();
 
 
                 final Gson gson = new Gson();
                 JsonArray jo = new JsonArray();
-                int recordNumber = 0;
                 String path;
                 File localFile = null;
 
@@ -123,15 +120,15 @@ public class AdminControl extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         if (folderLocation.equals("main")){
-                            path = mpa.groupName + "/" + m_Text;
-                            mainFolder.child(mpa.groupName + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
+                            path = extras.getString("group") + "/" + m_Text;
+                            mainFolder.child(extras.getString("group") + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
                         }
                         else{
-                            path = mpa.groupName + "/" + folderLocation + "/" + m_Text;
-                            mainFolder.child(mpa.groupName + "/" + folderLocation + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
+                            path = extras.getString("group") + "/" + folderLocation + "/" + m_Text;
+                            mainFolder.child(extras.getString("group") + "/" + folderLocation + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
                         }
                         //TODO place this FileRecord in the parent's JSON File.
-                        FileRecord newRecord = new FileRecord(recordNumber, extras.getString("group"), "folder", path, extras.getString("key"), extras.getString("admin"));
+                        FileRecord newRecord = new FileRecord(extras.getString("group"), "folder", path, extras.getString("key"), extras.getString("admin"));
 
                     }
                 });

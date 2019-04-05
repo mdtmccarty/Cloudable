@@ -109,7 +109,7 @@ public class NewGroup extends AppCompatActivity {
                             }
                         }
 
-                        data.add(new FileRecord(data.size() + 1, newGroup.getText().toString(),
+                        data.add(new FileRecord(newGroup.getText().toString(),
                                 "Folder", newGroup.getText().toString(), newKey.getText().toString(),
                                 newAdminKey.getText().toString()));
 
@@ -122,7 +122,7 @@ public class NewGroup extends AppCompatActivity {
                         }
                     }
                     else{
-                        FileRecord first = new FileRecord(1, newGroup.getText().toString(),
+                        FileRecord first = new FileRecord(newGroup.getText().toString(),
                                 "Folder", newGroup.getText().toString(), newKey.getText().toString(),
                                 newAdminKey.getText().toString());
 

@@ -1,7 +1,6 @@
 package com.example.cloudable;
 
 class FileRecord {
-    int recordNumber;
     String fileName;
     String fileType;
     String filePath;
@@ -12,8 +11,7 @@ class FileRecord {
 
     }
 
-    FileRecord(int num, String name, String type, String path, String newKey, String newAdmin){
-        recordNumber = num;
+    FileRecord( String name, String type, String path, String newKey, String newAdmin){
         fileName = name;
         fileType = type;
         filePath = path;
