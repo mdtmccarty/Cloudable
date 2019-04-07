@@ -47,7 +47,8 @@ public class AdminControl extends AppCompatActivity {
     private StorageReference mainFolder;
     private Uri filePath;
     private ImageView imageView;
-    Type token = new TypeToken<ArrayList<FileRecord>>(){}.getType();
+    Type token = new TypeToken<ArrayList<FileRecord>>() {
+    }.getType();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +89,6 @@ public class AdminControl extends AppCompatActivity {
                 mainFolder = FirebaseStorage.getInstance().getReference();
 
 
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Folder Name");
 
@@ -101,17 +101,17 @@ public class AdminControl extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         m_Text = input.getText().toString();
-                        //mainFolder = FirebaseStorage.getInstance().getReference();
+                        mainFolder = FirebaseStorage.getInstance().getReference();
 
 
-                final Gson gson = new Gson();
-                JsonArray jo = new JsonArray();
-                StorageReference parent = null;
-                String path;
-                File localFile = null;
+                        final Gson gson = new Gson();
+                        JsonArray jo = new JsonArray();
+                        StorageReference parent = null;
+                        String path;
+                        File localFile = null;
 
                         try {
-                            localFile = File.createTempFile("data","json");
+                            localFile = File.createTempFile("data", "json");
                             System.out.println("M_TEXT: " + m_Text);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -128,12 +128,11 @@ public class AdminControl extends AppCompatActivity {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        if (folderLocation.equals("main")){
+                        if (folderLocation.equals("main")) {
                             path = extras.getString("group") + "/" + m_Text;
                             parent = mainFolder.child(extras.getString("group"));
                             mainFolder.child(extras.getString("group") + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
-                        }
-                        else{
+                        } else {
                             path = extras.getString("group") + "/" + folderLocation + "/" + m_Text;
                             parent = mainFolder.child(extras.getString("group") + "/" + folderLocation);
                             mainFolder.child(extras.getString("group") + "/" + folderLocation + "/" + m_Text + "/StorageData.json").putFile(Uri.fromFile(localFile));
@@ -148,7 +147,7 @@ public class AdminControl extends AppCompatActivity {
                             public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
                                 ArrayList<FileRecord> files = null;
                                 try {
-                                    files = gson.fromJson(new FileReader(finalLocalFile),token);
+                                    files = gson.fromJson(new FileReader(finalLocalFile), token);
                                     files.add(newRecord);
                                     FileWriter fileWriter1 = new FileWriter(finalLocalFile, false);
                                     fileWriter1.write(gson.toJson(files, token));
@@ -201,21 +200,117 @@ public class AdminControl extends AppCompatActivity {
         folderBuilder.show();
     }
 
-    public void uploadPicture(View v){
+    public void uploadPicture(View v) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder.setTitle("In which folder would you like to create the new folder?");
 
-        mainFolder = FirebaseStorage.getInstance().getReference();
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 71);
+        final EditText folderLoca = new EditText(this);
+
+        folderLoca.setInputType(InputType.TYPE_CLASS_TEXT);
+        alertBuilder.setView(folderLoca);
+        alertBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                folderLocation = folderLoca.getText().toString();
+            }
+        });
+        alertBuilder.show();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Folder Name");
+
+        final EditText folderName = new EditText(this);
+
+        folderName.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(folderName);
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                m_Text = folderName.getText().toString();
+                mainFolder = FirebaseStorage.getInstance().getReference();
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 71);
+            }
+        });
+        builder.show();
+    }
+
+    public void uploadAudio(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Folder Name");
+
+        final EditText inputFolder = new EditText(this);
+
+        inputFolder.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(inputFolder);
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                m_Text = inputFolder.getText().toString();
+                mainFolder = FirebaseStorage.getInstance().getReference();
+                Intent intent = new Intent();
+                intent.setType("audio/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Audio File"), 71);
+            }
+        });
+        builder.show();
+    }
+
+    public void uploadVideo(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter the folder name you would like to upload the file to");
+
+        final EditText inputFolder = new EditText(this);
+
+        inputFolder.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(inputFolder);
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                m_Text = inputFolder.getText().toString();
+                mainFolder = FirebaseStorage.getInstance().getReference();
+                Intent intent = new Intent();
+                intent.setType("video/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Video"), 71);
+            }
+        });
+        builder.show();
+    }
+
+    public void uploadDocument(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter the folder name you would like to upload the file to");
+
+        final EditText inputFolder = new EditText(this);
+
+        inputFolder.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(inputFolder);
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                m_Text = inputFolder.getText().toString();
+                mainFolder = FirebaseStorage.getInstance().getReference();
+                Intent intent = new Intent();
+                intent.setType("application/pdf");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select PDF Document"), 71);
+            }
+        });
+        builder.show();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        if (requestCode == 71){
-            if (resultCode == RESULT_OK){
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+
+        if (requestCode == 71) {
+            if (resultCode == RESULT_OK) {
                 filePath = data.getData();
-                mainFolder.child("TestKey.jpg").putFile(filePath);
+                mainFolder.child(m_Text).putFile(filePath);
+                System.out.println(m_Text);
             }
         }
     }
