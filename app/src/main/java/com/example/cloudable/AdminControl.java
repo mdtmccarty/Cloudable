@@ -333,25 +333,122 @@ public class AdminControl extends AppCompatActivity {
     }
 
     public void uploadAudio(View v) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Folder Name");
+        folderLocation = "";
+
+        final Context context = this;
+        final Bundle extras = getIntent().getExtras();
+        AlertDialog.Builder folderBuilder = new AlertDialog.Builder(this);
+        folderBuilder.setTitle("In which folder would you like to upload the file?");
 
         final EditText inputFolder = new EditText(this);
 
         inputFolder.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(inputFolder);
-        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+        folderBuilder.setView(inputFolder);
+        folderBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                m_Text = inputFolder.getText().toString();
+                folderLocation = inputFolder.getText().toString();
                 mainFolder = FirebaseStorage.getInstance().getReference();
-                Intent intent = new Intent();
-                intent.setType("audio/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Audio File"), 71);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("File Name");
+
+                final EditText fileName = new EditText(context);
+
+                fileName.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(fileName);
+                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_Text = fileName.getText().toString();
+                        mainFolder = FirebaseStorage.getInstance().getReference();
+
+                        final Gson gson = new Gson();
+                        JsonArray jo = new JsonArray();
+                        StorageReference parent = null;
+                        final String path;
+                        File localFile = null;
+
+                        try {
+                            localFile = File.createTempFile("data", "json");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (folderLocation.equals("main")){
+                            path = extras.getString("group") + "/" + m_Text;
+                            parent = mainFolder.child(extras.getString("group"));
+                        }
+                        else{
+                            path = extras.getString("group") + "/" + folderLocation + "/" + m_Text;
+                            parent = mainFolder.child(extras.getString("group") + "/" + folderLocation);
+                        }
+
+                        filePath = Uri.parse(path);
+
+                        final File finalLocalFile = localFile;
+                        final FileRecord newRecord = new FileRecord(m_Text, "folder", path, extras.getString("key"), extras.getString("admin"));
+                        final StorageReference finalParent = parent;
+
+                        parent.child("StorageData.json").getFile(localFile).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                                ArrayList<FileRecord> files = null;
+                                try {
+                                    files = gson.fromJson(new FileReader(finalLocalFile), token);
+                                    files.add(newRecord);
+                                    FileWriter fileWriter1 = new FileWriter(finalLocalFile, false);
+                                    fileWriter1.write(gson.toJson(files, token));
+                                    fileWriter1.close();
+                                    System.out.println("creating folder");
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                finalParent.child("StorageData.json").putFile(Uri.fromFile(finalLocalFile)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                    }
+                                });
+                                Intent intent = new Intent();
+                                intent.setType("audio/*");
+                                intent.setAction(Intent.ACTION_GET_CONTENT);
+                                startActivityForResult(Intent.createChooser(intent, "Select Audio File"), 71);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        });
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
             }
         });
-        builder.show();
+
+        folderBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        folderBuilder.show();
     }
 
     public void uploadVideo(View v) {
@@ -377,25 +474,123 @@ public class AdminControl extends AppCompatActivity {
     }
 
     public void uploadDocument(View v) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter the folder name you would like to upload the file to");
+        folderLocation = "";
+
+        final Context context = this;
+        final Bundle extras = getIntent().getExtras();
+        AlertDialog.Builder folderBuilder = new AlertDialog.Builder(this);
+        folderBuilder.setTitle("In which folder would you like to upload the file?");
 
         final EditText inputFolder = new EditText(this);
 
         inputFolder.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(inputFolder);
-        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+        folderBuilder.setView(inputFolder);
+        folderBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                m_Text = inputFolder.getText().toString();
+                folderLocation = inputFolder.getText().toString();
                 mainFolder = FirebaseStorage.getInstance().getReference();
-                Intent intent = new Intent();
-                intent.setType("application/pdf");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select PDF Document"), 71);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("File Name");
+
+                final EditText fileName = new EditText(context);
+
+                fileName.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(fileName);
+                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_Text = fileName.getText().toString();
+                        mainFolder = FirebaseStorage.getInstance().getReference();
+
+                        final Gson gson = new Gson();
+                        JsonArray jo = new JsonArray();
+                        StorageReference parent = null;
+                        final String path;
+                        File localFile = null;
+
+                        try {
+                            localFile = File.createTempFile("data", "json");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (folderLocation.equals("main")){
+                            path = extras.getString("group") + "/" + m_Text;
+                            parent = mainFolder.child(extras.getString("group"));
+                        }
+                        else{
+                            path = extras.getString("group") + "/" + folderLocation + "/" + m_Text;
+                            parent = mainFolder.child(extras.getString("group") + "/" + folderLocation);
+                        }
+
+                        filePath = Uri.parse(path);
+
+                        final File finalLocalFile = localFile;
+                        final FileRecord newRecord = new FileRecord(m_Text, "folder", path, extras.getString("key"), extras.getString("admin"));
+                        final StorageReference finalParent = parent;
+
+                        parent.child("StorageData.json").getFile(localFile).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                                ArrayList<FileRecord> files = null;
+                                try {
+                                    files = gson.fromJson(new FileReader(finalLocalFile), token);
+                                    files.add(newRecord);
+                                    FileWriter fileWriter1 = new FileWriter(finalLocalFile, false);
+                                    fileWriter1.write(gson.toJson(files, token));
+                                    fileWriter1.close();
+                                    System.out.println("creating folder");
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                finalParent.child("StorageData.json").putFile(Uri.fromFile(finalLocalFile)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                    }
+                                });
+                                Intent intent = new Intent();
+                                intent.setType("application/pdf");
+                                intent.setAction(Intent.ACTION_GET_CONTENT);
+                                startActivityForResult(Intent.createChooser(intent, "Select PDF Document"), 71);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        });
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
             }
         });
-        builder.show();
+
+        folderBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        folderBuilder.show();
+    }
     }
 
 //    public void createFolderFirebase(String folderLocation, String fileName){
@@ -474,4 +669,4 @@ public class AdminControl extends AppCompatActivity {
 //            }
 //        });
 //    }
-}
+//}
