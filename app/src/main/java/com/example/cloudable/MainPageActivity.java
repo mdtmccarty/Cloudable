@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
@@ -34,6 +35,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.TimerTask;
+import java.util.concurrent.CountDownLatch;
 
 
 public class MainPageActivity extends AppCompatActivity
@@ -163,7 +167,9 @@ public class MainPageActivity extends AppCompatActivity
         //TODO Handle Refresh here
         if (id == R.id.action_settings) {
             System.out.println("Refreshing...");
-            masterList = readGroup();
+            readGroup();
+            masterList = parsedDirectories;
+            System.out.println("masterList size: "+masterList.size());
             master = new HandleContent(masterList.get(0),this);
             return true;
         }
@@ -214,44 +220,52 @@ public class MainPageActivity extends AppCompatActivity
         return true;
     }
 
-    public ArrayList<ParsedDirectory> readGroup(){
+    public synchronized ArrayList<ParsedDirectory> readGroup(){
             parsedDirectories = new ArrayList<>();
-            recurseDirectories(mStorageRef, groupName, groupName);
+            parsedDirectories.add(recurseDirectories(mStorageRef.child(groupName), groupName, groupName));
         return parsedDirectories;
     }
 
-    public ParsedDirectory recurseDirectories(final StorageReference ref, String dirName, String dirPath){
-        File localFile = null;
+    public ParsedDirectory recurseDirectories(final StorageReference ref, String dirName, String dirPath) {
+        File localFile;
         final ParsedDirectory parsedDirectory = new ParsedDirectory(dirName, dirPath);
         final Gson gson = new Gson();
         try {
-            localFile = File.createTempFile("data","json");
+            localFile = File.createTempFile("data", "json");
+            System.out.println("Calling Storage");
+            final File finalLocalFile = localFile;
+            synchronized (this) {
+                ref.child("StorageData.json").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+                        System.out.println("on complete");
+                        ArrayList<FileRecord> fileRecords;
+                        try {
+                            fileRecords = gson.fromJson(new FileReader(finalLocalFile), token);
+                            System.out.println(fileRecords.size());
+                            for (FileRecord record : fileRecords) {
+                                System.out.println("Reading a record");
+                                parsedDirectory.itemNames.add(record.fileName);
+                                parsedDirectory.itemPaths.put(record.fileName, record.filePath);
+                                if (record.fileType.equals("folder")) {
+                                    System.out.println("found a folder");
+                                    parsedDirectory.numSubDir++;
+                                    parsedDirectories.add(recurseDirectories(ref.child(record.fileName), record.fileName, record.filePath));
+                                    System.out.println("List of directorys size: " + parsedDirectories.size());
+                                }
+                            }
+                        } catch (FileNotFoundException e) {
+                            System.out.println("Did we catch an error?");
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        final File finalLocalFile = localFile;
-        ref.child("StorageData.json").getFile(localFile).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
-                System.out.println("on complete");
-        }});
-            ArrayList<FileRecord> fileRecords;
-            try {
-                fileRecords = gson.fromJson(new FileReader(finalLocalFile), token);
-                for (int i = 0; i < fileRecords.size(); i++){
-                    FileRecord record = fileRecords.get(i);
-                    parsedDirectory.itemNames.add(record.fileName);
-                    parsedDirectory.itemPaths.put(record.fileName, record.filePath);
-                    //if (record.fileType == "folder"){
-                    parsedDirectory.numSubDir++;
-                    parsedDirectories.add(recurseDirectories(ref.child(record.fileName), record.fileName, record.filePath));
-                    //}
-                }
-            } catch (FileNotFoundException e) {
-                System.out.println("Did we catch an error?");
-                e.printStackTrace();
-            }
-        return parsedDirectory;
+            return parsedDirectory;
     }
 
     public void changeButtons(HandleContent content){
