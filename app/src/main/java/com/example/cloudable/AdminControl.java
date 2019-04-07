@@ -153,6 +153,7 @@ public class AdminControl extends AppCompatActivity {
                                     FileWriter fileWriter1 = new FileWriter(finalLocalFile, false);
                                     fileWriter1.write(gson.toJson(files, token));
                                     fileWriter1.close();
+                                    System.out.println("creating folder");
                                 } catch (FileNotFoundException e) {
                                     e.printStackTrace();
                                 } catch (IOException e) {
