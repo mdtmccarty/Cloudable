@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -78,12 +79,7 @@ public class MainPageActivity extends AppCompatActivity
 
         context = this;
 
-        //TODO parse each JSON file into ParsedDirectory Objects, create an ArrayList of ParsedDirectory(s)
-        //TODO starting with the Main directory folder, then it's first child, then it's first child's first child,
-        //TODO then if it's first child's first child doesn't have any children, put it's first child's second child and so on
-        //TODO i.e. 1, 1a, 1ai, 1aii, 1aiii, 1b, 1bi, 1bii, 1c, 1d, 1di, 1dii...
-//        if (controller.getDirectories() != null) {
-            //masterList = readGroup();
+//            masterList = readGroup();
 
             //First initialization of main screen
             if (masterList != null) {
@@ -92,6 +88,12 @@ public class MainPageActivity extends AppCompatActivity
             //populate all folders.
             //master.recursDirectory(masterList, this);
 //        }
+        //TODO get the recursion to work!
+//        LinearLayout v = this.findViewById(R.id.mainLayout);
+//            v.removeAllViews();
+//            for (ImageButton button: master.imageButtons){
+//                v.addView(button);
+//            }
 
 
         androidImageButton = findViewById(R.id.webinarArchive);
@@ -252,4 +254,7 @@ public class MainPageActivity extends AppCompatActivity
         return parsedDirectory;
     }
 
+    public void changeButtons(HandleContent content){
+
+    }
     }

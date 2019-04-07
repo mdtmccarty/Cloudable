@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -32,12 +33,28 @@ public class HandleContent {
         handleContents = new ArrayList<HandleContent>();
     }
 
-    public HandleContent(ParsedDirectory parsedDirectory, Context context){
+    public HandleContent(ParsedDirectory parsedDirectory, final Context context){
         directory = parsedDirectory.getDirName();
         numSubDir = parsedDirectory.getNumSubDir();
         for (int i = 0; i < parsedDirectory.getItemNames().size(); i++){
-            ImageButton imageButton = new ImageButton(context);
+            final ImageButton imageButton = new ImageButton(context);
             imageButton.setTag(parsedDirectory.getItemNames().get(i));
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v = v.findViewById(R.id.mainLayout);
+                    ((LinearLayout) v).removeAllViews();
+                    String name = imageButton.getTag().toString();
+                    HandleContent change = new HandleContent();
+                    for (HandleContent content : handleContents){
+                        if (content.directory == name){
+                            change = content;
+                        }
+                    }
+                    for (ImageButton button: change.imageButtons)
+                    ((LinearLayout) v).addView(button);
+                }
+            });
             imageButtons.add(imageButton);
         }
      }
