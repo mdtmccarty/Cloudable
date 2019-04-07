@@ -1,8 +1,10 @@
 package com.example.cloudable;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -17,10 +19,19 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 
@@ -30,15 +41,22 @@ public class MainPageActivity extends AppCompatActivity
     SharedPreferences sp;
     ArrayList<ParsedDirectory> masterList;
     HandleContent master;
+    private StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
+    File localFile;
+    final String FILE_NAME = "audioFiles.mp3";
     String getKey;
     String getAdminKey;
-    Controller controller;
+    Context context;
+    Gson gson = new Gson();
+    Type token = new TypeToken<ArrayList<FileRecord>>(){}.getType();
+    ArrayList<ParsedDirectory> parsedDirectories;
 
     //TODO set this groupName equal to the actual Group Name
     public String groupName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //mStorageRef = FirebaseStorage.getInstance().getReference();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -58,17 +76,19 @@ public class MainPageActivity extends AppCompatActivity
         getKey = extras.getString("key", "");
         getAdminKey = extras.getString("admin", "");
 
-        controller = new Controller(groupName);
+        context = this;
 
         //TODO parse each JSON file into ParsedDirectory Objects, create an ArrayList of ParsedDirectory(s)
         //TODO starting with the Main directory folder, then it's first child, then it's first child's first child,
         //TODO then if it's first child's first child doesn't have any children, put it's first child's second child and so on
         //TODO i.e. 1, 1a, 1ai, 1aii, 1aiii, 1b, 1bi, 1bii, 1c, 1d, 1di, 1dii...
 //        if (controller.getDirectories() != null) {
-            masterList = controller.getDirectories();
+            //masterList = readGroup();
 
             //First initialization of main screen
-            master = new HandleContent(masterList.get(0), this);
+            if (masterList != null) {
+                master = new HandleContent(masterList.get(0), this);
+            }
             //populate all folders.
             //master.recursDirectory(masterList, this);
 //        }
@@ -141,6 +161,8 @@ public class MainPageActivity extends AppCompatActivity
         //TODO Handle Refresh here
         if (id == R.id.action_settings) {
             System.out.println("Refreshing...");
+            masterList = readGroup();
+            master = new HandleContent(masterList.get(0),this);
             return true;
         }
 
@@ -189,4 +211,45 @@ public class MainPageActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-}
+
+    public ArrayList<ParsedDirectory> readGroup(){
+            parsedDirectories = new ArrayList<>();
+            recurseDirectories(mStorageRef, groupName, groupName);
+        return parsedDirectories;
+    }
+
+    public ParsedDirectory recurseDirectories(final StorageReference ref, String dirName, String dirPath){
+        File localFile = null;
+        final ParsedDirectory parsedDirectory = new ParsedDirectory(dirName, dirPath);
+        final Gson gson = new Gson();
+        try {
+            localFile = File.createTempFile("data","json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        final File finalLocalFile = localFile;
+        ref.child("StorageData.json").getFile(localFile).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                System.out.println("on complete");
+        }});
+            ArrayList<FileRecord> fileRecords;
+            try {
+                fileRecords = gson.fromJson(new FileReader(finalLocalFile), token);
+                for (int i = 0; i < fileRecords.size(); i++){
+                    FileRecord record = fileRecords.get(i);
+                    parsedDirectory.itemNames.add(record.fileName);
+                    parsedDirectory.itemPaths.put(record.fileName, record.filePath);
+                    //if (record.fileType == "folder"){
+                    parsedDirectory.numSubDir++;
+                    parsedDirectories.add(recurseDirectories(ref.child(record.fileName), record.fileName, record.filePath));
+                    //}
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("Did we catch an error?");
+                e.printStackTrace();
+            }
+        return parsedDirectory;
+    }
+
+    }

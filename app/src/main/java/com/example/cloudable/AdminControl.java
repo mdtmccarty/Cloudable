@@ -41,8 +41,8 @@ public class AdminControl extends AppCompatActivity {
 
     Button createFolderButton;
 
-    private String m_Text = "";
-    private String folderLocation = "";
+    private String m_Text;
+    private String folderLocation;
     private String folderPath = "";
     private StorageReference mainFolder;
     private Uri filePath;
@@ -69,6 +69,8 @@ public class AdminControl extends AppCompatActivity {
     }
 
     public void createFolder(View v) {
+        folderLocation = "";
+        m_Text = "";
         final Bundle extras = getIntent().getExtras();
         AlertDialog.Builder folderBuilder = new AlertDialog.Builder(this);
         folderBuilder.setTitle("In which folder would you like to create the new folder?");
@@ -147,7 +149,7 @@ public class AdminControl extends AppCompatActivity {
                                 try {
                                     files = gson.fromJson(new FileReader(finalLocalFile), token);
                                     files.add(newRecord);
-                                    FileWriter fileWriter1 = new FileWriter(finalLocalFile);
+                                    FileWriter fileWriter1 = new FileWriter(finalLocalFile, false);
                                     fileWriter1.write(gson.toJson(files, token));
                                     fileWriter1.close();
                                 } catch (FileNotFoundException e) {
