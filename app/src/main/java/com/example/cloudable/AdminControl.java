@@ -3,11 +3,8 @@ package com.example.cloudable;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,12 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -33,7 +27,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -48,8 +41,8 @@ public class AdminControl extends AppCompatActivity {
 
     Button createFolderButton;
 
-    private String m_Text = "";
-    private String folderLocation = "";
+    private String m_Text;
+    private String folderLocation;
     private String folderPath = "";
     private StorageReference mainFolder;
     private Uri filePath;
@@ -75,6 +68,8 @@ public class AdminControl extends AppCompatActivity {
     }
 
     public void createFolder(View v) {
+        folderLocation = "";
+        m_Text = "";
         final Bundle extras = getIntent().getExtras();
         AlertDialog.Builder folderBuilder = new AlertDialog.Builder(this);
         folderBuilder.setTitle("In which folder would you like to create the new folder?");
@@ -106,7 +101,7 @@ public class AdminControl extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         m_Text = input.getText().toString();
-                        mainFolder = FirebaseStorage.getInstance().getReference();
+                        //mainFolder = FirebaseStorage.getInstance().getReference();
 
 
                 final Gson gson = new Gson();
@@ -155,7 +150,7 @@ public class AdminControl extends AppCompatActivity {
                                 try {
                                     files = gson.fromJson(new FileReader(finalLocalFile),token);
                                     files.add(newRecord);
-                                    FileWriter fileWriter1 = new FileWriter(finalLocalFile);
+                                    FileWriter fileWriter1 = new FileWriter(finalLocalFile, false);
                                     fileWriter1.write(gson.toJson(files, token));
                                     fileWriter1.close();
                                 } catch (FileNotFoundException e) {
@@ -219,7 +214,7 @@ public class AdminControl extends AppCompatActivity {
         if (requestCode == 71){
             if (resultCode == RESULT_OK){
                 filePath = data.getData();
-                mainFolder.child("TestKey/").putFile(filePath);
+                mainFolder.child("TestKey.jpg").putFile(filePath);
             }
         }
     }
